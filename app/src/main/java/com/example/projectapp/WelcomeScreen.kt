@@ -79,9 +79,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
         Box(
             modifier = modifier.fillMaxHeight(0.5f),
             contentAlignment = Alignment.Center
-
         ) {
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -102,7 +100,6 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                     fontSize= 34.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
-
                 )
             }
         }
