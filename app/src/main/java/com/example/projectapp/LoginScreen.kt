@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,9 +33,22 @@ import androidx.compose.ui.unit.sp
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 
-
-
-
+@Composable
+fun CustomTextField(
+    modifier: Modifier=Modifier,
+    text: String,
+    onValueChange: (String) -> Unit,
+    icon: ImageVector,
+) {
+    TextField(
+        value ="" ,
+        onValueChange = onValueChange,
+        label = { Text(text) },
+        leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+        shape = MaterialTheme.shapes.large,
+    )
+    
+}
 @Composable
 fun LoginScreen(
     modifier: Modifier=Modifier
@@ -48,26 +62,21 @@ fun LoginScreen(
     ) {
         Title()
         Text(
-            text = "Login in to continue",
+            text = "Login to continue",
             color = Color.White,
             fontSize = 24.sp
         )
-
-        TextField(
-            value ="" ,
+        CustomTextField(
+            text = "Username",
             onValueChange = {/*TODO*/},
-            label = { Text("Username") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
-            shape = MaterialTheme.shapes.large,
+            icon = Icons.Default.Person
         )
-        TextField(
-            value ="" ,
+        CustomTextField(
+            text = "Password",
             onValueChange = {/*TODO*/},
-            label = { Text("Password") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
-            shape = MaterialTheme.shapes.large,
-
+            icon = Icons.Default.Lock
         )
+
         FunctionButton(
             text = "Login",
             onClick = {/*TODO*/}

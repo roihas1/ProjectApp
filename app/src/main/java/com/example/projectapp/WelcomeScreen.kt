@@ -41,8 +41,8 @@ import androidx.compose.ui.unit.sp
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 object MyColors {
-    val Primary = Color(0xFF6600F8)
-    val ButtonColor = Color(0xFF7C24F8)
+    val Primary = Color(0xff5c1cec)
+    val ButtonColor = Color(0xff6c2cf4)
     val PrimaryVariant = Color(0xFF3700B3)
     val Secondary = Color(0xFF03DAC6)
     val SecondaryVariant = Color(0xFF018786)
