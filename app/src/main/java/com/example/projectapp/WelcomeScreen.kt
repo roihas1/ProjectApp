@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 object MyColors {
-    val Primary = Color(0xFF6200EE)
+    val Primary = Color(0xFF6600F8)
     val ButtonColor = Color(0xFF7C24F8)
     val PrimaryVariant = Color(0xFF3700B3)
     val Secondary = Color(0xFF03DAC6)
@@ -63,6 +65,64 @@ fun Title(modifier: Modifier = Modifier) {
             color = Color.White
         )
     }
+}
+
+@Composable
+fun FunctionButton(
+    modifier: Modifier = Modifier,
+    onClick : () -> Unit,
+    text: String
+){
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(26.dp),
+        colors = ButtonDefaults.buttonColors(
+            contentColor = Color.White,
+            containerColor = MyColors.ButtonColor
+        ),
+        onClick = onClick,
+    ) {
+        Text(
+            text = text,
+            modifier=modifier.padding(16.dp),
+            fontSize = 24.sp
+        )
+    }
+    
+}
+
+@Composable
+fun FooterCreateAccount(modifier: Modifier = Modifier) {
+    Divider(
+        color = Color.White.copy(alpha = 0.3f),
+        thickness = 1.dp,
+        modifier = Modifier.padding(32.dp)
+    )
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+
+    ) {
+        Text(
+            text = "Don't have an account?",
+            color = Color.White,
+            fontSize = 18.sp
+        )
+
+        TextButton(
+            modifier = modifier,
+            onClick = {/*todo*/},
+        ){
+            Text(
+                text = "Register Now",
+                color = Color.White,
+                fontSize = 18.sp,
+                textDecoration = TextDecoration.Underline
+            )
+        }
+    }
+    Spacer(modifier = modifier.height(46.dp))
 }
 @Composable
 fun WelcomeScreen(modifier: Modifier = Modifier) {
@@ -104,44 +164,13 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        Button(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(26.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.White,
-                containerColor = MyColors.ButtonColor
-            ),
-            onClick = { /*TODO*/ },
-        ) {
-            Text(
-                text = "Login",
-                modifier=modifier.padding(16.dp),
-                fontSize = 24.sp
-            )
-        }
+        FunctionButton(
+            modifier = modifier,
+            onClick = {/*todo*/},
+            text = "Login"
+        )
         Spacer(modifier = modifier.height(32.dp))
-        Row(
-            modifier = modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-
-        ) {
-            Text(
-                text = "Don't have an account?",
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            ClickableText(
-                text = AnnotatedString("Register Now"),
-                onClick = {/*todo*/},
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    textDecoration = TextDecoration.Underline
-                )
-            )
-        }
-        Spacer(modifier = modifier.height(46.dp))
+        FooterCreateAccount(modifier)
 
 
     }
