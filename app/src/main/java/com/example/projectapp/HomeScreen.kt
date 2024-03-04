@@ -5,17 +5,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,15 +41,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
+
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
+
     Column ( modifier = modifier
         .fillMaxSize()
         .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(52.dp)
+    verticalArrangement = Arrangement.spacedBy(42.dp)
     ){
         Title()
 
@@ -50,7 +61,7 @@ fun HomeScreen(
                     .padding(24.dp)
                     .width(320.dp),
                 shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(48.dp),
+                contentPadding = PaddingValues(40.dp),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = MyColors.ButtonColor,
                     containerColor = MyColors.ButtonColor
@@ -85,10 +96,71 @@ fun HomeScreen(
                     textAlign = TextAlign.Center
                 )
             }
+//        Spacer(modifier =modifier.height(0.dp))
+        BottomNavigation(modifier)
 
 
     }
 
+}
+
+@Composable
+fun BottomNavigation(modifier: Modifier=Modifier) {
+    NavigationBar(
+        modifier=modifier,
+        containerColor = MyColors.Primary,
+        contentColor = Color.White,
+        ) {
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(Icons.Default.Home, contentDescription = null) },
+            label = { Text("Home") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.White,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.White
+            )
+
+            )
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
+            label = { Text("Profile") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.White,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.White
+            )
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { /*TODO*/ },
+            icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
+            label = { Text("My porfolios") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = Color.White,
+                unselectedIconColor = Color.White,
+                selectedTextColor = Color.White,
+                unselectedTextColor = Color.White
+            )
+        )
+
+
+
+    }
+    
+}
+@Preview
+@Composable
+fun BottomNavigationPreview() {
+    ProjectAppTheme {
+        BottomNavigation()
+    }
+    
 }
 
 @Preview
