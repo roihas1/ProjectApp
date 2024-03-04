@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.Path
@@ -79,15 +81,23 @@ fun FunctionButton(
             .padding(26.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = Color.White,
-            containerColor = MyColors.ButtonColor
+            containerColor = Color.Transparent
         ),
+        contentPadding = PaddingValues(),
         onClick = onClick,
     ) {
-        Text(
-            text = text,
-            modifier=modifier.padding(16.dp),
-            fontSize = 24.sp
-        )
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(Brush.horizontalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                modifier = modifier.padding(16.dp),
+                fontSize = 24.sp
+            )
+        }
     }
     
 }
@@ -129,7 +139,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MyColors.Primary),
+            .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
 
