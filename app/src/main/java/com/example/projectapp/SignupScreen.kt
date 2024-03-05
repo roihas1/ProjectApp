@@ -76,19 +76,11 @@ fun SignUpScreen(modifier: Modifier= Modifier) {
             text = "Sign up",
             onClick = {/*TODO*/}
         )
-
-
-
-
-
-
+        
     }
 
 
 }
-
-
-
 
 
 @Preview

@@ -54,7 +54,6 @@ fun HomeScreen(
     verticalArrangement = Arrangement.spacedBy(42.dp)
     ){
         Title()
-
        Button(
                 onClick = { /*TODO*/ },
                 modifier = Modifier
