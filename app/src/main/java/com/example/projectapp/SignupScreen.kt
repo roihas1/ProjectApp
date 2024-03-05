@@ -11,6 +11,10 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -22,6 +26,12 @@ import com.example.projectapp.ui.theme.ProjectAppTheme
 
 @Composable
 fun SignUpScreen(modifier: Modifier= Modifier) {
+
+    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+
 
     Column(
         modifier = modifier
@@ -52,24 +62,31 @@ fun SignUpScreen(modifier: Modifier= Modifier) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             CustomTextField(
-                text = "Username",
-                onValueChange = {/*TODO*/},
-                icon = Icons.Default.Person
+                value = username,
+                onValueChange = {newUsername -> username = newUsername},
+                icon = Icons.Default.Person,
+                label = "Username"
+
             )
             CustomTextField(
-                text = "Email",
-                onValueChange = {/*TODO*/},
-                icon = Icons.Default.Person
+                label = "Email",
+                onValueChange = {newEmail -> email = newEmail},
+                icon = Icons.Default.Person,
+                value = email
             )
             CustomTextField(
-                text = "Password",
-                onValueChange = {/*TODO*/},
-                icon = Icons.Default.Lock
+                label = "Password",
+                onValueChange = {newPassword -> password = newPassword},
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                value = password
             )
             CustomTextField(
-                text = "Confirm Password",
-                onValueChange = {/*TODO*/},
-                icon = Icons.Default.Lock
+                label = "Confirm Password",
+                onValueChange = {newConfirmPassword -> confirmPassword = newConfirmPassword},
+                icon = Icons.Default.Lock,
+                isPassword = true,
+                value = confirmPassword
             )
         }
         FunctionButton(

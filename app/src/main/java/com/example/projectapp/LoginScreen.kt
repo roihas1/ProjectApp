@@ -10,50 +10,101 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.twotone.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.Visibility
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 
 @Composable
 fun CustomTextField(
     modifier: Modifier=Modifier,
-    text: String,
+    value: String,
+    label: String,
     onValueChange: (String) -> Unit,
     icon: ImageVector,
+    isPassword: Boolean = false
 ) {
-    TextField(
-        value ="" ,
-        onValueChange = onValueChange,
-        label = { Text(text) },
-        leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
-        shape = MaterialTheme.shapes.large,
-    )
+
+    var passwordVisibility by remember { mutableStateOf(false)}
+
+    val iconVisibility = if (passwordVisibility)
+        painterResource(id =R.drawable.visibility)
+    else
+        painterResource(id = R.drawable.visibility_off)
+
+    if (isPassword){
+        TextField(
+
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label) },
+            leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+            shape = MaterialTheme.shapes.large,
+            visualTransformation= if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                IconButton(
+                    onClick = {passwordVisibility = !passwordVisibility},
+                ){
+                    Icon(painter = iconVisibility,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(12.dp)
+                            .size(24.dp)
+                        )
+                }
+            },
+
+        )
+
+    }else {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label) },
+            leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+            shape = MaterialTheme.shapes.large,
+        )
+    }
     
 }
 @Composable
 fun LoginScreen(
     modifier: Modifier=Modifier
 ) {
+    var password by rememberSaveable { mutableStateOf("") }
+    var username by rememberSaveable { mutableStateOf("") }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -68,14 +119,17 @@ fun LoginScreen(
             fontSize = 24.sp
         )
         CustomTextField(
-            text = "Username",
-            onValueChange = {/*TODO*/},
-            icon = Icons.Default.Person
+            value = username,
+            onValueChange = {newUsername -> username = newUsername},
+            icon = Icons.Default.Person,
+            label = "Username"
         )
         CustomTextField(
-            text = "Password",
-            onValueChange = {/*TODO*/},
-            icon = Icons.Default.Lock
+            value = password,
+            onValueChange = {newPassword -> password = newPassword},
+            icon = Icons.Default.Lock,
+            isPassword = true,
+            label = "Password"
         )
 
         FunctionButton(
