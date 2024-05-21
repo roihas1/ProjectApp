@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 object MyColors {
@@ -104,7 +106,7 @@ fun FunctionButton(
 }
 
 @Composable
-fun FooterCreateAccount(modifier: Modifier = Modifier) {
+fun FooterCreateAccount(modifier: Modifier = Modifier,navController: NavController) {
     Divider(
         color = Color.White.copy(alpha = 0.3f),
         thickness = 1.dp,
@@ -123,7 +125,7 @@ fun FooterCreateAccount(modifier: Modifier = Modifier) {
 
         TextButton(
             modifier = modifier,
-            onClick = {/*todo*/},
+            onClick = {navController.navigate("SignupScreen")},
         ){
             Text(
                 text = "Register Now",
@@ -136,7 +138,7 @@ fun FooterCreateAccount(modifier: Modifier = Modifier) {
     Spacer(modifier = modifier.height(46.dp))
 }
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(navController: NavController, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -177,11 +179,11 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.weight(1f))
         FunctionButton(
             modifier = modifier,
-            onClick = {/*todo*/},
+            onClick = { navController.navigate("LoginScreen")},
             text = "Login"
         )
         Spacer(modifier = modifier.height(32.dp))
-        FooterCreateAccount(modifier)
+        FooterCreateAccount(modifier,navController)
 
 
     }
@@ -191,6 +193,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
 @Composable
 fun WelcomeScreenPreview() {
     ProjectAppTheme {
-        WelcomeScreen()
+        val navController = rememberNavController()
+        WelcomeScreen(navController)
     }
 }

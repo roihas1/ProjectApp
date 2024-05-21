@@ -44,6 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.Visibility
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 
@@ -100,8 +102,8 @@ fun CustomTextField(
     
 }
 @Composable
-fun LoginScreen(
-    modifier: Modifier=Modifier
+fun LoginScreen(navController: NavController,
+                modifier: Modifier=Modifier
 ) {
     var password by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
@@ -134,10 +136,10 @@ fun LoginScreen(
 
         FunctionButton(
             text = "Login",
-            onClick = {/*TODO*/}
+            onClick = {navController.navigate("HomeScreen")}
         )
         Spacer(modifier = modifier.height(48.dp))
-        FooterCreateAccount(modifier)
+        FooterCreateAccount(modifier,navController)
     }
 }
 
@@ -145,7 +147,8 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     ProjectAppTheme {
-        LoginScreen()
+        val navController = rememberNavController()
+        LoginScreen(navController)
     }
 
 }

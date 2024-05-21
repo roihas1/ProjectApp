@@ -39,19 +39,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 
 @Composable
-fun HomeScreen(
-    modifier: Modifier = Modifier
+fun HomeScreen(navController: NavController,
+               modifier: Modifier = Modifier
 ) {
 
     Column ( modifier = modifier
         .fillMaxSize()
         .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(42.dp)
+    verticalArrangement = Arrangement.SpaceBetween,
+
     ){
         Title()
        Button(
@@ -153,20 +156,20 @@ fun BottomNavigation(modifier: Modifier=Modifier) {
     }
     
 }
-@Preview
-@Composable
-fun BottomNavigationPreview() {
-    ProjectAppTheme {
-        BottomNavigation()
-    }
-    
-}
+//@Preview
+//@Composable
+//fun BottomNavigationPreview() {
+//    ProjectAppTheme {
+//        BottomNavigation()
+//    }
+//}
 
 @Preview
 @Composable
 fun HomeScreenPreview() {
     ProjectAppTheme {
-        HomeScreen()
+        val navController = rememberNavController()
+        HomeScreen(navController)
     }
 
 }
