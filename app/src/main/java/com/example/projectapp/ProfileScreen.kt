@@ -144,7 +144,7 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 color = Color.White
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("changePassword") },
                 modifier = Modifier
                     .padding(24.dp)
                     .width(360.dp),

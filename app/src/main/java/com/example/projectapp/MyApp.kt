@@ -24,5 +24,8 @@ fun MyApp() {
         composable("ProfileScreen"){
             ProfileScreen(navController)
         }
+        composable("changePassword"){
+            ChangePasswordScreen(navController)
+        }
     }
 }
