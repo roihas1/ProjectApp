@@ -142,7 +142,7 @@ fun BottomNavigation(modifier: Modifier=Modifier) {
             selected = false,
             onClick = { /*TODO*/ },
             icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
-            label = { Text("My porfolios") },
+            label = { Text("My portfolios") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.White,
                 unselectedIconColor = Color.White,

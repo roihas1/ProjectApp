@@ -59,7 +59,7 @@ fun SignUpScreen(navController: NavController, modifier: Modifier= Modifier) {
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
+               Text(
                 text = "Sign up",
                 color = Color.White,
                 fontSize = 36.sp
