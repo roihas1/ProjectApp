@@ -21,5 +21,8 @@ fun MyApp() {
         composable("HomeScreen"){
             HomeScreen(navController)
         }
+        composable("ProfileScreen"){
+            ProfileScreen(navController)
+        }
     }
 }

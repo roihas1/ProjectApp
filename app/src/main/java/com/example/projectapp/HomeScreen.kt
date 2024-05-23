@@ -99,7 +99,7 @@ fun HomeScreen(navController: NavController,
                 )
             }
 //        Spacer(modifier =modifier.height(0.dp))
-        BottomNavigation(modifier)
+        BottomNavigation(navController,modifier)
 
 
     }
@@ -107,7 +107,7 @@ fun HomeScreen(navController: NavController,
 }
 
 @Composable
-fun BottomNavigation(modifier: Modifier=Modifier) {
+fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier) {
     NavigationBar(
         modifier=modifier,
         containerColor = MyColors.Primary,
@@ -115,7 +115,7 @@ fun BottomNavigation(modifier: Modifier=Modifier) {
         ) {
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("HomeScreen") },
             icon = { Icon(Icons.Default.Home, contentDescription = null) },
             label = { Text("Home") },
             colors = NavigationBarItemDefaults.colors(
@@ -128,7 +128,7 @@ fun BottomNavigation(modifier: Modifier=Modifier) {
             )
         NavigationBarItem(
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("ProfileScreen") },
             icon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
             label = { Text("Profile") },
             colors = NavigationBarItemDefaults.colors(
