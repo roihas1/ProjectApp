@@ -67,28 +67,30 @@ fun FunctionButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     text: String,
-    textSize:TextUnit = 24.sp,
-    textColor: Color = Color.White,
-    containerColor: Color = Color.Transparent,
-    gradientColors: List<Color> = listOf(MyColors.Primary, MyColors.PrimaryVariant),
+    buttonWidth: Dp = 150.dp,
+    textSize: TextUnit = 24.sp,
+    enabledTextColor: Color = Color.White,
+    disabledTextColor: Color = Color.Gray,
+    enabledBackgroundColors: List<Color> = listOf(MyColors.Primary, MyColors.PrimaryVariant),
+    disabledBackgroundColor: Color = Color.DarkGray,
     contentPadding: PaddingValues = PaddingValues(16.dp),
-    buttonPadding: PaddingValues = PaddingValues(16.dp),
-    shape: RoundedCornerShape = RoundedCornerShape(32.dp),
-    width: Dp = 150.dp,
-    enabled:Boolean = true
+    buttonPadding: PaddingValues = PaddingValues(8.dp),
+    shape: RoundedCornerShape = RoundedCornerShape(26.dp),
+    enabled: Boolean = true
 ) {
     val backgroundColors = if (enabled) {
         Brush.horizontalGradient(enabledBackgroundColors)
     } else {
         Brush.horizontalGradient(listOf(disabledBackgroundColor, disabledBackgroundColor))
     }
+
     ElevatedButton(
         modifier = modifier
-            .width(width)
+            .width(buttonWidth)
             .padding(buttonPadding),
         colors = ButtonDefaults.buttonColors(
-            contentColor = textColor,
-            containerColor = containerColor
+            contentColor = if (enabled) enabledTextColor else disabledTextColor,
+            containerColor = Color.Transparent
         ),
         contentPadding = PaddingValues(),
         shape = shape,
@@ -96,16 +98,16 @@ fun FunctionButton(
         enabled = enabled
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .background(Brush.horizontalGradient(gradientColors)),
+                .background(backgroundColors),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = text,
-                modifier = modifier.padding(contentPadding),
+                modifier = Modifier.padding(contentPadding),
                 fontSize = textSize,
-                color = textColor
+                color = if (enabled) enabledTextColor else disabledTextColor
             )
         }
     }
