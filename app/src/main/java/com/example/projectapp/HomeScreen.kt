@@ -58,7 +58,7 @@ fun HomeScreen(navController: NavController,
     ){
         Title()
        Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("question1") },
                 modifier = Modifier
                     .padding(24.dp)
                     .width(320.dp),
