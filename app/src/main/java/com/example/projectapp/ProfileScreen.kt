@@ -1,4 +1,5 @@
 package com.example.projectapp
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +33,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
@@ -40,6 +45,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -50,11 +56,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 @Composable
 fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
-   
+    var showDialog by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("User Name") }
+    var userImageUri by remember { mutableStateOf<Uri?>(null) }
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -104,17 +114,32 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                     modifier= modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_missing),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(88.dp)
-                            .clip(CircleShape)
-                    )
+                    if (userImageUri != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(userImageUri)
+                                    .build()
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_missing),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(CircleShape)
+                        )
+                    }
                     FunctionButton(
                         modifier = Modifier,
-                        onClick = { /*todo edit*/ },
+                        onClick = { showDialog = true },
                         text = "Edit",
                         buttonWidth = 80.dp,
                         textSize = 16.sp
@@ -122,7 +147,7 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 }
             }
             Text(
-                text = "User Name",
+                text = userName,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
@@ -151,6 +176,18 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
             )
 
             BottomNavigation(navController, modifier)
+            if (showDialog) {
+                EditProfileDialog(
+                    currentName = userName,
+                    currentImageUri = userImageUri,
+                    onDismiss = { showDialog = false },
+                    onSave = { newName, newImageUri ->
+                        userName = newName
+                        userImageUri = newImageUri
+                        showDialog = false
+                    }
+                )
+            }
         }
     }
 

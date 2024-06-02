@@ -61,6 +61,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("com.google.accompanist:accompanist-permissions:0.30.1")
+    implementation ("androidx.activity:activity-compose:1.5.1")
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Debug dependencies
     debugImplementation("androidx.compose.ui:ui-tooling")
