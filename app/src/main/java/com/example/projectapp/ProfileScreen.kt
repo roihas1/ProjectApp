@@ -1,5 +1,7 @@
 package com.example.projectapp
+import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +61,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import org.json.JSONObject
 
 @Composable
 fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
@@ -203,3 +211,86 @@ fun ProfileScreenPreview() {
     }
 
 }
+
+//
+//@Composable
+//fun PokemonInfoScreen() {
+//    var pokemonInfo by remember { mutableStateOf("") }
+//
+//    val context = LocalContext.current
+//
+//    // Call fetchPokemonInfo when the Composable is first composed
+//    LaunchedEffect(Unit) {
+//        fetchPokemonInfo(context, pokemonId = 1,
+//            onSuccess = { info ->
+//                pokemonInfo = info
+//            },
+//            onError = { errorMessage ->
+//                pokemonInfo = errorMessage
+//            }
+//        )
+//    }
+//
+//    Column {
+//        Text(text = "Pokemon Information:")
+//        Text(text = pokemonInfo)
+//        Button(onClick = {
+//            // Call fetchPokemonInfo again when the button is clicked
+//            fetchPokemonInfo(context, pokemonId = 2,
+//                onSuccess = { info ->
+//                    pokemonInfo = info
+//                },
+//                onError = { errorMessage ->
+//                    pokemonInfo = errorMessage
+//                }
+//            )
+//        }) {
+//            Text(text = "Fetch Different Pokémon")
+//        }
+//    }
+//}
+//fun fetchPokemonInfo(context: Context, pokemonId: Int, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
+//    // Instantiate the RequestQueue.
+//    val requestQueue = Volley.newRequestQueue(context)
+//
+//    // URL of the API endpoint for the specified Pokémon ID.
+//    val url = "https://catfact.ninja/fact"
+//
+//    // Request a string response from the provided URL.
+//    val stringRequest = StringRequest(Request.Method.GET, url,
+//        { response ->
+//            try {
+//                // Parse the JSON response
+//                val jsonObject = JSONObject(response)
+//                val fact = jsonObject.getString("fact")
+//                val length = jsonObject.getString("length")
+//
+//
+//
+//                // Format the information
+//                val formattedInfo = "fact: ${fact}, length: ${length}"
+//
+//                // Call the onSuccess callback with the formatted information
+//                onSuccess.invoke(formattedInfo)
+//            } catch (e: Exception) {
+//                // Handle JSON parsing error
+//                onError.invoke("Error parsing JSON: ${e.message}")
+//            }
+//        },
+//        { error ->
+//            // Call the onError callback with the error message
+//            Log.println(Log.ERROR,"APII","errorrrrr: ${error.message}")
+//            onError.invoke("Error: ${error.message}")
+//
+//        })
+//
+//    // Add the request to the RequestQueue.
+//    requestQueue.add(stringRequest)
+//}
+//@Preview(showBackground = true)
+//@Composable
+//fun PokemonInfoScreenPreview() {
+//    ProjectAppTheme {
+//        PokemonInfoScreen()
+//    }
+//}

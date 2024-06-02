@@ -64,6 +64,7 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-permissions:0.30.1")
     implementation ("androidx.activity:activity-compose:1.5.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation ("com.android.volley:volley:1.2.0")
 
     // Debug dependencies
     debugImplementation("androidx.compose.ui:ui-tooling")
