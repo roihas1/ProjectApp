@@ -150,48 +150,6 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 buttonWidth = 360.dp,
 
             )
-//            Button(
-//                onClick = { navController.navigate("changePassword") },
-//                modifier = Modifier
-//                    .padding(24.dp)
-//                    .width(360.dp),
-//                shape = MaterialTheme.shapes.extraLarge,
-//                contentPadding = PaddingValues(24.dp),
-//                colors = ButtonDefaults.buttonColors(
-//                    contentColor = MyColors.ButtonColor,
-//                    containerColor = MyColors.ButtonColor
-//                )
-//            ) {
-//                Text(
-//                    modifier= Modifier.padding(0.dp),
-//                    text="Change password",
-//                    fontSize = 24.sp,
-//                    color= Color.White,
-//                    textAlign = TextAlign.Center
-//                )
-//            }
-//            Spacer(modifier = modifier.height(48.dp))
-//            Button(
-//             onClick = { navController.navigate("question1")},
-//            modifier = Modifier
-//                .padding(24.dp)
-//                .width(360.dp),
-//            shape = MaterialTheme.shapes.extraLarge,
-//            contentPadding = PaddingValues(24.dp),
-//            colors = ButtonDefaults.buttonColors(
-//                contentColor = MyColors.ButtonColor,
-//                containerColor = MyColors.ButtonColor
-//            )
-//            ) {
-//                Text(
-//                    modifier= Modifier.padding(4.dp),
-//                    text="New Investment Portfolio",
-//                    fontSize = 24.sp,
-//                    color= Color.White,
-//                    textAlign = TextAlign.Center
-//                )
-//            }
-
 
             BottomNavigation(navController, modifier)
         }
