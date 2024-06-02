@@ -72,8 +72,16 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
             Spacer(modifier = modifier.height(16.dp))
             Row(
                 modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween,
+
             ) {
+                FunctionButton(
+                    modifier = Modifier,
+                    onClick = { navController.navigate("welcomeScreen") },// todo insert logout functionality
+                    text = "Logout",
+                    buttonWidth = 120.dp,
+                    textSize = 16.sp
+                )
                 Icon(
                     Icons.Rounded.Settings,
                     contentDescription = "Settings",
@@ -83,7 +91,6 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                         .align(Alignment.CenterVertically)
                         .clickable(onClick = {/*todo*/}),
                     tint = Color.White,
-
                     )
             }
             Row(
@@ -106,28 +113,14 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                             .size(88.dp)
                             .clip(CircleShape)
                     )
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .paddingFromBaseline(top = 24.dp,bottom = 8.dp),
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = MyColors.ButtonColor,
-                            containerColor = MyColors.ButtonColor
-                        )
-                    ) {
-                        Text(
-                            modifier= Modifier.padding(0.dp),
-                            text= "Edit",
-                            fontSize = 12.sp,
-                            color= Color.White,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                    FunctionButton(
+                        modifier = Modifier,
+                        onClick = { /*todo edit*/ },
+                        text = "Edit",
+                        buttonWidth = 80.dp,
+                        textSize = 16.sp
+                    )
                 }
-
             }
             Text(
                 text = "User Name",
@@ -143,47 +136,62 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 style = TextStyle(fontSize = 24.sp),
                 color = Color.White
             )
-            Button(
+            FunctionButton(
+                modifier = Modifier,
                 onClick = { navController.navigate("changePassword") },
-                modifier = Modifier
-                    .padding(24.dp)
-                    .width(360.dp),
-                shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MyColors.ButtonColor,
-                    containerColor = MyColors.ButtonColor
-                )
-            ) {
-                Text(
-                    modifier= Modifier.padding(0.dp),
-                    text="Change password",
-                    fontSize = 24.sp,
-                    color= Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-            Spacer(modifier = modifier.height(64.dp))
-            Button(
-             onClick = { /*TODO*/ },
-            modifier = Modifier
-                .padding(24.dp)
-                .width(360.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            contentPadding = PaddingValues(24.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = MyColors.ButtonColor,
-                containerColor = MyColors.ButtonColor
+                text = "Change password",
+                buttonWidth = 360.dp,
+
             )
-            ) {
-            Text(
-                modifier= Modifier.padding(4.dp),
-                text="New Investment Portfolio",
-                fontSize = 24.sp,
-                color= Color.White,
-                textAlign = TextAlign.Center
+            FunctionButton(
+                modifier = Modifier,
+                onClick = { navController.navigate("question1") },
+                text = "New Investment Portfolio",
+                buttonWidth = 360.dp,
+
             )
-        }
+//            Button(
+//                onClick = { navController.navigate("changePassword") },
+//                modifier = Modifier
+//                    .padding(24.dp)
+//                    .width(360.dp),
+//                shape = MaterialTheme.shapes.extraLarge,
+//                contentPadding = PaddingValues(24.dp),
+//                colors = ButtonDefaults.buttonColors(
+//                    contentColor = MyColors.ButtonColor,
+//                    containerColor = MyColors.ButtonColor
+//                )
+//            ) {
+//                Text(
+//                    modifier= Modifier.padding(0.dp),
+//                    text="Change password",
+//                    fontSize = 24.sp,
+//                    color= Color.White,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+//            Spacer(modifier = modifier.height(48.dp))
+//            Button(
+//             onClick = { navController.navigate("question1")},
+//            modifier = Modifier
+//                .padding(24.dp)
+//                .width(360.dp),
+//            shape = MaterialTheme.shapes.extraLarge,
+//            contentPadding = PaddingValues(24.dp),
+//            colors = ButtonDefaults.buttonColors(
+//                contentColor = MyColors.ButtonColor,
+//                containerColor = MyColors.ButtonColor
+//            )
+//            ) {
+//                Text(
+//                    modifier= Modifier.padding(4.dp),
+//                    text="New Investment Portfolio",
+//                    fontSize = 24.sp,
+//                    color= Color.White,
+//                    textAlign = TextAlign.Center
+//                )
+//            }
+
 
             BottomNavigation(navController, modifier)
         }
