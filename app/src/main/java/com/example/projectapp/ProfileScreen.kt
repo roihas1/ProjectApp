@@ -69,7 +69,6 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Spacer(modifier = modifier.height(16.dp))
             Row(
                 modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
