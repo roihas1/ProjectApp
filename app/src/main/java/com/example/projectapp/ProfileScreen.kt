@@ -1,4 +1,5 @@
 package com.example.projectapp
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +33,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
@@ -40,6 +45,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -50,11 +56,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.projectapp.ui.theme.ProjectAppTheme
 
 @Composable
 fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
-   
+    var showDialog by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("User Name") }
+    var userImageUri by remember { mutableStateOf<Uri?>(null) }
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -69,11 +79,18 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Spacer(modifier = modifier.height(16.dp))
             Row(
                 modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween,
+
             ) {
+                FunctionButton(
+                    modifier = Modifier,
+                    onClick = { navController.navigate("welcomeScreen") },// todo insert logout functionality
+                    text = "Logout",
+                    buttonWidth = 120.dp,
+                    textSize = 16.sp
+                )
                 Icon(
                     Icons.Rounded.Settings,
                     contentDescription = "Settings",
@@ -83,7 +100,6 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                         .align(Alignment.CenterVertically)
                         .clickable(onClick = {/*todo*/}),
                     tint = Color.White,
-
                     )
             }
             Row(
@@ -98,39 +114,40 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                     modifier= modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_missing),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(88.dp)
-                            .clip(CircleShape)
-                    )
-                    Button(
-                        onClick = { /*TODO*/ },
-                        modifier = Modifier
-                            .paddingFromBaseline(top = 24.dp,bottom = 8.dp),
-                        shape = MaterialTheme.shapes.small,
-                        contentPadding = PaddingValues(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            contentColor = MyColors.ButtonColor,
-                            containerColor = MyColors.ButtonColor
+                    if (userImageUri != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(userImageUri)
+                                    .build()
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(CircleShape)
                         )
-                    ) {
-                        Text(
-                            modifier= Modifier.padding(0.dp),
-                            text= "Edit",
-                            fontSize = 12.sp,
-                            color= Color.White,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_missing),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(88.dp)
+                                .clip(CircleShape)
                         )
                     }
+                    FunctionButton(
+                        modifier = Modifier,
+                        onClick = { showDialog = true },
+                        text = "Edit",
+                        buttonWidth = 80.dp,
+                        textSize = 16.sp
+                    )
                 }
-
             }
             Text(
-                text = "User Name",
+                text = userName,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
@@ -143,49 +160,34 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 style = TextStyle(fontSize = 24.sp),
                 color = Color.White
             )
-            Button(
+            FunctionButton(
+                modifier = Modifier,
                 onClick = { navController.navigate("changePassword") },
-                modifier = Modifier
-                    .padding(24.dp)
-                    .width(360.dp),
-                shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MyColors.ButtonColor,
-                    containerColor = MyColors.ButtonColor
-                )
-            ) {
-                Text(
-                    modifier= Modifier.padding(0.dp),
-                    text="Change password",
-                    fontSize = 24.sp,
-                    color= Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-            Spacer(modifier = modifier.height(64.dp))
-            Button(
-             onClick = { /*TODO*/ },
-            modifier = Modifier
-                .padding(24.dp)
-                .width(360.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            contentPadding = PaddingValues(24.dp),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = MyColors.ButtonColor,
-                containerColor = MyColors.ButtonColor
+                text = "Change password",
+                buttonWidth = 360.dp,
+
             )
-            ) {
-            Text(
-                modifier= Modifier.padding(4.dp),
-                text="New Investment Portfolio",
-                fontSize = 24.sp,
-                color= Color.White,
-                textAlign = TextAlign.Center
+            FunctionButton(
+                modifier = Modifier,
+                onClick = { navController.navigate("question1") },
+                text = "New Investment Portfolio",
+                buttonWidth = 360.dp,
+
             )
-        }
 
             BottomNavigation(navController, modifier)
+            if (showDialog) {
+                EditProfileDialog(
+                    currentName = userName,
+                    currentImageUri = userImageUri,
+                    onDismiss = { showDialog = false },
+                    onSave = { newName, newImageUri ->
+                        userName = newName
+                        userImageUri = newImageUri
+                        showDialog = false
+                    }
+                )
+            }
         }
     }
 
