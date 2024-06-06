@@ -34,7 +34,7 @@ fun MyApp() {
             SurveyScreen(navController, 2, "Choose model",listOf("Markowitz","Gini"))
         }
         composable("question3") {
-            SurveyScreen(navController, 3, "Choose your collection",listOf("indexes(recommended)", "Top indexes", "indexes and stocks","Top stocks"))
+            SurveyScreen(navController, 3, "Choose your collection",listOf("Indexes(recommended)", "Top indexes", "Indexes and stocks","Top stocks"))
         }
         composable("question4") {
             SurveyScreen(navController, 4, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-100"))

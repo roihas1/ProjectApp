@@ -1,11 +1,16 @@
 package com.example.projectapp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +29,28 @@ import com.example.projectapp.ui.theme.ProjectAppTheme
 @Composable
 fun SurveyScreen(navController: NavHostController, questionNumber: Int, question: String,answers: List<String>) {
     var selectedAnswer by remember { mutableStateOf("") }
+    var showDialogForAnswer by remember { mutableStateOf(false) }
+    var answerClicked by remember { mutableStateOf("") }
+    val allStocks = listOf(
+        listOf(
+            "AAPL", "MSFT", "GOOGL", "AMZN", "FB",
+            "TSLA", "NVDA", "INTC", "ADBE", "CSCO"
+        ),
+        listOf(
+            "PG", "KO", "PEP", "PM", "MO",
+            "KMB", "CL", "HSY", "K", "GIS"
+        ),
+        listOf(
+            "JPM", "BAC", "WFC", "C", "GS",
+            "MS", "AXP", "BK", "USB", "SCHW"
+        ),
+        listOf(
+            "SPX", "IXIC", "DJI", "RUT", "FTSE",
+            "DAX", "CAC", "NIKKEI", "HSI", "ASX"
+        )
+    )
+    var clickedStocks by remember {mutableIntStateOf(-1) }
+
 
     Column(
         modifier = Modifier
@@ -62,11 +89,41 @@ fun SurveyScreen(navController: NavHostController, questionNumber: Int, question
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = answer,
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    if (questionNumber == 3){
+                        TextButton(onClick = {
+                            showDialogForAnswer = true
+                            if (answer == "Indexes(recommended)") {
+                                clickedStocks = 0
+                                answerClicked = "Indexes(recommended)"
+                            }
+                            else if (answer == "Top indexes"){
+                                clickedStocks = 1
+                                answerClicked = "Top indexes"
+                            }
+                            else if (answer == "Indexes and stocks"){
+                                clickedStocks = 2
+                                answerClicked = "Indexes and stocks"
+                            }
+                            else if (answer == "Top stocks"){
+                                clickedStocks = 3
+                                answerClicked = "Top stocks"
+                            }
+                        }) {
+                            Text(
+                                text = answer,
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+
+                        }
+                    }
+                    else {
+                        Text(
+                            text = answer,
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
         }
@@ -104,9 +161,56 @@ fun SurveyScreen(navController: NavHostController, questionNumber: Int, question
 
             }
         }
+
+            if (showDialogForAnswer) {
+                StockListDialog(
+                    onDismissRequest = { showDialogForAnswer = false },
+                    stockList = allStocks[clickedStocks],
+                    portfolioDescription = answerClicked
+                )
+            }
+
+
         BottomNavigation(navController)
     }
 }
+@Composable
+fun StockListDialog(
+    onDismissRequest: () -> Unit,
+    stockList: List<String>,
+    portfolioDescription: String
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = portfolioDescription, style = MaterialTheme.typography.bodyMedium)
+        },
+        text = {
+            LazyColumn {
+                items(stockList) { stock ->
+                    Text(
+                        text = stock,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .clickable {
+                                // Handle the selection of the stock/index
+                                onDismissRequest()
+                            }
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismissRequest
+            ) {
+                Text("Close")
+            }
+        }
+    )
+}
+
 
 @Composable
 fun SummaryScreen(navController: NavHostController) {
@@ -130,7 +234,19 @@ fun SummaryScreen(navController: NavHostController) {
         BottomNavigation(navController)
     }
 }
-
+@Composable
+@Preview
+fun StockListDialogPreview(){
+    ProjectAppTheme{
+        val stockList = listOf(
+        "AAPL", "GOOGL", "MSFT", "AMZN", "TSLA",
+        "FB", "NASDAQ", "S&P 500", "DOW JONES"
+        )
+        StockListDialog( onDismissRequest = { var showDialogForAnswer = null },
+            stockList = stockList,
+            portfolioDescription = "Portfolio number 1")
+    }
+}
 @Composable
 @Preview(showBackground = true)
 fun DefaultPreview() {
