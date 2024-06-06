@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,10 +24,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.AuthViewModel
+import com.example.projectapp.viewmodel.SignUpState
 
 
 @Composable
-fun SignUpScreen(navController: NavController, modifier: Modifier= Modifier) {
+fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifier: Modifier= Modifier) {
+    val signUpState = viewModel.signUpState
 
     var username by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -63,37 +67,53 @@ fun SignUpScreen(navController: NavController, modifier: Modifier= Modifier) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             CustomTextField(
-                value = username,
-                onValueChange = {newUsername -> username = newUsername},
+                value = viewModel.username,
+                onValueChange = {viewModel.username = it},
                 icon = Icons.Default.Person,
                 label = "Username"
 
             )
             CustomTextField(
                 label = "Email",
-                onValueChange = {newEmail -> email = newEmail},
+                onValueChange = {viewModel.email = it},
                 icon = Icons.Default.Person,
-                value = email
+                value = viewModel.email
             )
             CustomTextField(
                 label = "Password",
-                onValueChange = {newPassword -> password = newPassword},
+                onValueChange = {viewModel.password = it},
                 icon = Icons.Default.Lock,
                 isPassword = true,
-                value = password
+                value = viewModel.password
             )
             CustomTextField(
                 label = "Confirm Password",
-                onValueChange = {newConfirmPassword -> confirmPassword = newConfirmPassword},
+                onValueChange = {viewModel.rePassword = it},
                 icon = Icons.Default.Lock,
                 isPassword = true,
-                value = confirmPassword
+                value = viewModel.rePassword
             )
         }
         FunctionButton(
             text = "Sign up",
-            onClick = {navController.navigate("HomeScreen")}
+            onClick = {
+                viewModel.signUp(navController)
+                navController.navigate("HomeScreen")//todo remove this
+            }
         )
+        when (signUpState) {
+            is SignUpState.Loading -> {
+
+            }
+            is SignUpState.Success -> {
+//                navController.navigate("HomeScreen")
+                Text("Sign-Up Successful!")
+            }
+            is SignUpState.Error -> {
+                Text("Error: ${signUpState.message}")
+            }
+            else -> {}
+        }
         
     }
 
@@ -106,7 +126,8 @@ fun SignUpScreen(navController: NavController, modifier: Modifier= Modifier) {
 fun PreviewSignUpScreen() {
     ProjectAppTheme {
         val navController = rememberNavController()
-        SignUpScreen(navController)
+        val viewModel = AuthViewModel()
+        SignUpScreen(navController,viewModel)
     }
 }
 

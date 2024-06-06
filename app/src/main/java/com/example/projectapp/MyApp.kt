@@ -4,10 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import com.example.projectapp.viewmodel.AuthViewModel
 
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
+    val viewModel = AuthViewModel()
     NavHost(navController = navController, startDestination = "welcomeScreen") {
         composable("welcomeScreen"){
             WelcomeScreen(navController)
@@ -16,7 +18,7 @@ fun MyApp() {
             LoginScreen(navController)
         }
         composable("SignupScreen"){
-            SignUpScreen(navController)
+            SignUpScreen(navController,viewModel)
         }
         composable("HomeScreen"){
             HomeScreen(navController)

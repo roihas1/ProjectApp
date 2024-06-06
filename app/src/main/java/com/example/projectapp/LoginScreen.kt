@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.AuthViewModel
+import com.example.projectapp.viewmodel.LoginState
+import com.example.projectapp.viewmodel.SignUpState
 
 
 @Composable
@@ -92,8 +95,10 @@ fun CustomTextField(
 }
 @Composable
 fun LoginScreen(navController: NavController,
+                viewModel: AuthViewModel,
                 modifier: Modifier=Modifier
 ) {
+    val loginState = viewModel.loginState
     var password by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     Column(
@@ -110,14 +115,14 @@ fun LoginScreen(navController: NavController,
             fontSize = 24.sp
         )
         CustomTextField(
-            value = username,
-            onValueChange = {newUsername -> username = newUsername},
+            value = viewModel.username,
+            onValueChange = {viewModel.username = it},
             icon = Icons.Default.Person,
             label = "Username"
         )
         CustomTextField(
-            value = password,
-            onValueChange = {newPassword -> password = newPassword},
+            value = viewModel.password,
+            onValueChange = {viewModel.password = it},
             icon = Icons.Default.Lock,
             isPassword = true,
             label = "Password"
@@ -125,11 +130,28 @@ fun LoginScreen(navController: NavController,
 
         FunctionButton(
             text = "Login",
-            onClick = {navController.navigate("HomeScreen")}
+            onClick = {
+                viewModel.login(navController)
+                navController.navigate("HomeScreen")
+            }
         )
         Spacer(modifier = modifier.height(48.dp))
         FooterCreateAccount(modifier,navController)
     }
+    when (loginState) {
+        is LoginState.Loading -> {
+
+        }
+        is LoginState.Success -> {
+//                navController.navigate("HomeScreen")
+            Text("Sign-Up Successful!")
+        }
+        is LoginState.Error -> {
+            Text("Error: ")
+        }
+        else -> {}
+    }
+
 }
 
 @Preview
@@ -137,7 +159,8 @@ fun LoginScreen(navController: NavController,
 fun LoginScreenPreview() {
     ProjectAppTheme {
         val navController = rememberNavController()
-        LoginScreen(navController)
+        val viewModel = AuthViewModel()
+        LoginScreen(navController,viewModel)
     }
 
 }

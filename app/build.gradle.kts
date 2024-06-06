@@ -65,6 +65,12 @@ dependencies {
     implementation ("androidx.activity:activity-compose:1.5.1")
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation ("com.android.volley:volley:1.2.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("androidx.compose.ui:ui:1.0.0")
+    implementation ("androidx.compose.material:material:1.0.0")
+    implementation ("androidx.compose.ui:ui-tooling:1.0.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
 
     // Debug dependencies
     debugImplementation("androidx.compose.ui:ui-tooling")
