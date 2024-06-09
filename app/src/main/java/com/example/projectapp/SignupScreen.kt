@@ -1,9 +1,14 @@
 package com.example.projectapp
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -18,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +37,7 @@ import com.example.projectapp.viewmodel.SignUpState
 @Composable
 fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifier: Modifier= Modifier) {
     val signUpState = viewModel.signUpState
+    val context = LocalContext.current
 
     var username by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -41,7 +48,8 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
+            .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant)))
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(26.dp)
     ) {
@@ -71,7 +79,6 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 onValueChange = {viewModel.username = it},
                 icon = Icons.Default.Person,
                 label = "Username"
-
             )
             CustomTextField(
                 label = "Email",
@@ -94,13 +101,44 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 value = viewModel.rePassword
             )
         }
-        FunctionButton(
-            text = "Sign up",
-            onClick = {
-                viewModel.signUp(navController)
-                navController.navigate("HomeScreen")//todo remove this
-            }
-        )
+
+        Row {
+            FunctionButton(
+                modifier.padding(vertical = 120.dp),
+                onClick = {
+                   viewModel.resetState()
+                          },
+                text = "Clear",
+                buttonWidth = 110.dp,
+                enabledBackgroundColors = listOf(MyColors.ButtonColor,MyColors.Secondary)
+            )
+            FunctionButton(
+                modifier = modifier.padding(vertical = 120.dp), // for allow scrolling and reach the confirm password field. ,
+                text = "Sign up",
+                onClick = {
+                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+                    val passwordPattern = "^(?=.*[A-Z])(?=.*[0-9]).{8,}\$"
+
+                    if (viewModel.username.isEmpty() || viewModel.email.isEmpty() || viewModel.password.isEmpty() || viewModel.rePassword.isEmpty()) {
+                        Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (!viewModel.email.matches(emailPattern.toRegex())) {
+                        Toast.makeText(context, "Invalid email format", Toast.LENGTH_SHORT).show()
+                    } else if (viewModel.password != viewModel.rePassword) {
+                        Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    } else if (!viewModel.password.matches(passwordPattern.toRegex())) {
+                        Toast.makeText(
+                            context,
+                            "Password must contain at least one capital letter and one number, and be at least 8 characters long",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        viewModel.signUp(navController)
+                        navController.navigate("HomeScreen")
+                    }
+                }
+            )
+        }
         when (signUpState) {
             is SignUpState.Loading -> {
 
@@ -110,6 +148,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 Text("Sign-Up Successful!")
             }
             is SignUpState.Error -> {
+
                 Text("Error: ${signUpState.message}")
             }
             else -> {}

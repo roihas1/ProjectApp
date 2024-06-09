@@ -66,10 +66,11 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.AuthViewModel
 import org.json.JSONObject
 
 @Composable
-fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
+fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifier: Modifier = Modifier){
     var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("User Name") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -94,7 +95,10 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
             ) {
                 FunctionButton(
                     modifier = Modifier,
-                    onClick = { navController.navigate("welcomeScreen") },// todo insert logout functionality
+                    onClick = {
+                        viewModel.resetState()
+                        navController.navigate("welcomeScreen")
+                              },// todo insert logout functionality
                     text = "Logout",
                     buttonWidth = 120.dp,
                     textSize = 16.sp
@@ -155,14 +159,14 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
                 }
             }
             Text(
-                text = userName,
+                text = viewModel.username,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
                 color = Color.White
             )
             Text(
-                text = "Email",
+                text = viewModel.email,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
@@ -207,7 +211,8 @@ fun ProfileScreen(navController: NavController,modifier: Modifier = Modifier){
 fun ProfileScreenPreview() {
     ProjectAppTheme {
         val navController = rememberNavController()
-        ProfileScreen(navController)
+        val viewModel = AuthViewModel()
+        ProfileScreen(navController,viewModel)
     }
 
 }

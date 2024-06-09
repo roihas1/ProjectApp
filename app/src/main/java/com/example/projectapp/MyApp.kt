@@ -15,7 +15,7 @@ fun MyApp() {
             WelcomeScreen(navController)
         }
         composable("loginScreen"){
-            LoginScreen(navController)
+            LoginScreen(navController,viewModel)
         }
         composable("SignupScreen"){
             SignUpScreen(navController,viewModel)
@@ -24,7 +24,7 @@ fun MyApp() {
             HomeScreen(navController)
         }
         composable("ProfileScreen"){
-            ProfileScreen(navController)
+            ProfileScreen(navController,viewModel)
         }
         composable("changePassword"){
             ChangePasswordScreen(navController)

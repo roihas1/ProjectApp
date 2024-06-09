@@ -41,10 +41,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signUp(navController: NavController) {
-        if (password != rePassword) {
-            signUpState = SignUpState.Error("Passwords do not match")
-            return
-        }
+
 
         viewModelScope.launch {
             signUpState = SignUpState.Loading
@@ -60,6 +57,14 @@ class AuthViewModel : ViewModel() {
                 signUpState = SignUpState.Error("An error occurred: ${e.message}")
             }
         }
+    }
+    fun resetState() {
+        username = ""
+        password = ""
+        email = ""
+        rePassword = ""
+        loginState = LoginState.Idle
+        signUpState = SignUpState.Idle
     }
 }
 

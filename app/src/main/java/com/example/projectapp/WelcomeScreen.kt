@@ -39,8 +39,8 @@ object MyColors {
     val Primary = Color(0xff5c1cec)
     val ButtonColor = Color(0xff6c2cf4)
     val PrimaryVariant = Color(0xFF290086)
-    val Secondary = Color(0xFF03DAC6)
-    val SecondaryVariant = Color(0xFF018786)
+    val Secondary = Color(0xFFFFFFFF)
+    val SecondaryVariant = Color(0xFF4D50FF)
 
 }
 
