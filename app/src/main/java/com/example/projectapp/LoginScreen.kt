@@ -144,10 +144,10 @@ fun LoginScreen(navController: NavController,
         }
         is LoginState.Success -> {
 //                navController.navigate("HomeScreen")
-            Text("Sign-Up Successful!")
+            Text("Login Successful!")
         }
         is LoginState.Error -> {
-            Text("Error: ")
+            Text("Error: ${loginState.message}")
         }
         else -> {}
     }
