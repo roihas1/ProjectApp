@@ -1,5 +1,6 @@
 package com.example.projectapp
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -101,6 +103,7 @@ fun LoginScreen(navController: NavController,
     val loginState = viewModel.loginState
     var password by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -115,8 +118,8 @@ fun LoginScreen(navController: NavController,
             fontSize = 24.sp
         )
         CustomTextField(
-            value = viewModel.username,
-            onValueChange = {viewModel.username = it},
+            value = viewModel.email,
+            onValueChange = {viewModel.email = it},
             icon = Icons.Default.Person,
             label = "Username"
         )
@@ -131,8 +134,14 @@ fun LoginScreen(navController: NavController,
         FunctionButton(
             text = "Login",
             onClick = {
-                viewModel.login(navController)
-                navController.navigate("HomeScreen")
+                if (viewModel.email.isEmpty() || viewModel.password.isEmpty()){
+                    Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                else {
+                    viewModel.login(navController)
+                }
+//                navController.navigate("HomeScreen")
             }
         )
         Spacer(modifier = modifier.height(48.dp))

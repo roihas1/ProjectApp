@@ -1,5 +1,6 @@
 package com.example.projectapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,8 +17,10 @@ import retrofit2.Response
 
 
 class AuthViewModel : ViewModel() {
-    var username by mutableStateOf("")
+    var firstName by mutableStateOf("")
+    var lastName by mutableStateOf("")
     var password by mutableStateOf("")
+    var phoneNumber by mutableStateOf("")
     var email by mutableStateOf("")
     var rePassword by mutableStateOf("")
     var loginState by mutableStateOf<LoginState>(LoginState.Idle)
@@ -27,7 +30,7 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             loginState = LoginState.Loading
             try {
-                val response = RetrofitInstance.api.login(LoginRequest(username, password))
+                val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
                     loginState = LoginState.Success(response.body())
                     navController.navigate("HomeScreen")
@@ -36,17 +39,21 @@ class AuthViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 loginState = LoginState.Error("An error occurred: ${e.message}")
+                Log.e("error","An error occurred: ${e.message}")
+
             }
         }
     }
 
     fun signUp(navController: NavController) {
 
-
         viewModelScope.launch {
             signUpState = SignUpState.Loading
             try {
-                val response = RetrofitInstance.api.signUp(SignUpRequest(username, email, password))
+                Log.println(Log.INFO,"on track","enter api")
+                val response = RetrofitInstance.api.signUp(SignUpRequest(
+                    email,firstName,lastName,phoneNumber,  password, rePassword
+                ))
                 if (response.isSuccessful) {
                     signUpState = SignUpState.Success(response.body())
                     navController.navigate("HomeScreen")
@@ -59,7 +66,9 @@ class AuthViewModel : ViewModel() {
         }
     }
     fun resetState() {
-        username = ""
+        firstName = ""
+        lastName = ""
+        phoneNumber = ""
         password = ""
         email = ""
         rePassword = ""

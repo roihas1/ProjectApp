@@ -75,10 +75,22 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             CustomTextField(
-                value = viewModel.username,
-                onValueChange = {viewModel.username = it},
+                value = viewModel.firstName,
+                onValueChange = {viewModel.firstName = it},
                 icon = Icons.Default.Person,
-                label = "Username"
+                label = "First Name"
+            )
+            CustomTextField(
+                value = viewModel.lastName,
+                onValueChange = {viewModel.lastName = it},
+                icon = Icons.Default.Person,
+                label = "Last Name"
+            )
+            CustomTextField(
+                label = "Phone number",
+                onValueChange = {viewModel.phoneNumber = it},
+                icon = Icons.Default.Person,
+                value = viewModel.phoneNumber
             )
             CustomTextField(
                 label = "Email",
@@ -116,15 +128,15 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 modifier = modifier.padding(vertical = 120.dp), // for allow scrolling and reach the confirm password field. ,
                 text = "Sign up",
                 onClick = {
-                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+//                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
                     val passwordPattern = "^(?=.*[A-Z])(?=.*[0-9]).{8,}\$"
-
-                    if (viewModel.username.isEmpty() || viewModel.email.isEmpty() || viewModel.password.isEmpty() || viewModel.rePassword.isEmpty()) {
+//                    else if (!viewModel.email.matches(emailPattern.toRegex())) {
+//                    Toast.makeText(context, "Invalid email format(client)", Toast.LENGTH_SHORT).show()
+//                }
+                    if (viewModel.firstName.isEmpty() || viewModel.lastName.isEmpty()|| viewModel.email.isEmpty() || viewModel.password.isEmpty() || viewModel.rePassword.isEmpty()) {
                         Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT)
                             .show()
-                    } else if (!viewModel.email.matches(emailPattern.toRegex())) {
-                        Toast.makeText(context, "Invalid email format", Toast.LENGTH_SHORT).show()
-                    } else if (viewModel.password != viewModel.rePassword) {
+                    }  else if (viewModel.password != viewModel.rePassword) {
                         Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
                     } else if (!viewModel.password.matches(passwordPattern.toRegex())) {
                         Toast.makeText(
@@ -133,8 +145,9 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
+                        Toast.makeText(context, "enter to api func", Toast.LENGTH_SHORT).show()
                         viewModel.signUp(navController)
-                        navController.navigate("HomeScreen")
+//                        navController.navigate("HomeScreen")
                     }
                 }
             )

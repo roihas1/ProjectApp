@@ -159,7 +159,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifi
                 }
             }
             Text(
-                text = viewModel.username,
+                text = viewModel.firstName +" "+ viewModel.lastName,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
