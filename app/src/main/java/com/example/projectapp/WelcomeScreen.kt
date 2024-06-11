@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.AuthViewModel
 
 object MyColors {
     val Primary = Color(0xff5c1cec)
@@ -115,7 +116,7 @@ fun FunctionButton(
 
 
 @Composable
-fun FooterCreateAccount(modifier: Modifier = Modifier,navController: NavController) {
+fun FooterCreateAccount(modifier: Modifier = Modifier,navController: NavController,viewModel: AuthViewModel) {
     Divider(
         color = Color.White.copy(alpha = 0.3f),
         thickness = 1.dp,
@@ -134,7 +135,10 @@ fun FooterCreateAccount(modifier: Modifier = Modifier,navController: NavControll
 
         TextButton(
             modifier = modifier,
-            onClick = {navController.navigate("SignupScreen")},
+            onClick = {
+                viewModel.resetState()
+                navController.navigate("SignupScreen")
+                      },
         ){
             Text(
                 text = "Register Now",
@@ -147,7 +151,7 @@ fun FooterCreateAccount(modifier: Modifier = Modifier,navController: NavControll
     Spacer(modifier = modifier.height(46.dp))
 }
 @Composable
-fun WelcomeScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun WelcomeScreen(navController: NavController, viewModel: AuthViewModel,modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -192,7 +196,7 @@ fun WelcomeScreen(navController: NavController, modifier: Modifier = Modifier) {
             text = "Login"
         )
         Spacer(modifier = modifier.height(32.dp))
-        FooterCreateAccount(modifier,navController)
+        FooterCreateAccount(modifier,navController, viewModel  )
 
 
     }
@@ -203,6 +207,7 @@ fun WelcomeScreen(navController: NavController, modifier: Modifier = Modifier) {
 fun WelcomeScreenPreview() {
     ProjectAppTheme {
         val navController = rememberNavController()
-        WelcomeScreen(navController)
+        val viewModel = AuthViewModel()
+        WelcomeScreen(navController,viewModel)
     }
 }

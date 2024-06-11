@@ -187,7 +187,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifi
 
             )
 
-            BottomNavigation(navController, modifier)
+            BottomNavigation(navController, modifier, selectedProfile = true)
             if (showDialog) {
                 EditProfileDialog(
                     currentName = userName,

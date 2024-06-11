@@ -139,13 +139,14 @@ fun LoginScreen(navController: NavController,
                         .show()
                 }
                 else {
+                    navController.navigate("HomeScreen")
                     viewModel.login(navController)
                 }
 //                navController.navigate("HomeScreen")
             }
         )
         Spacer(modifier = modifier.height(48.dp))
-        FooterCreateAccount(modifier,navController)
+        FooterCreateAccount(modifier,navController,viewModel)
     }
     when (loginState) {
         is LoginState.Loading -> {

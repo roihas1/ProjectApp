@@ -57,98 +57,74 @@ fun HomeScreen(navController: NavController,
 
     ){
         Title()
-       Button(
-                onClick = { navController.navigate("question1") },
-                modifier = Modifier
-                    .padding(24.dp)
-                    .width(320.dp),
-                shape = MaterialTheme.shapes.extraLarge,
-                contentPadding = PaddingValues(40.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MyColors.ButtonColor,
-                    containerColor = MyColors.ButtonColor
-                )
-            ) {
-                Text(
-                    modifier= Modifier.padding(16.dp),
-                    text="Create New\n\nInvestment\n\nPortfolio",
-                    fontSize = 32.sp,
-                    color= Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            TextButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .width(320.dp),
-                shape = MaterialTheme.shapes.large,
-                contentPadding = PaddingValues(48.dp),
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MyColors.ButtonColor,
-                    containerColor = MyColors.ButtonColor
-                )
-            ) {
-                Text(
-                    modifier= Modifier.padding(18.dp),
-                    text="Go To Last\n\n Portfolio",
-                    fontSize = 32.sp,
-                    color= Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
-//        Spacer(modifier =modifier.height(0.dp))
-        BottomNavigation(navController,modifier)
-
+        FunctionButton(
+            onClick = { navController.navigate("question1")},
+            text ="Create New\n\nInvestment\n\n  Portfolio",
+            buttonWidth = 320.dp,
+            contentPadding = PaddingValues(30.dp),
+            textSize = 32.sp
+        )
+        FunctionButton(
+            onClick = { },
+            text ="Go To Last\n\n Portfolio",
+            buttonWidth = 320.dp,
+            contentPadding = PaddingValues(48.dp),
+            textSize = 32.sp
+        )
+        BottomNavigation(navController,modifier,true)
 
     }
 
 }
 
 @Composable
-fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier) {
+fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,selectedHome:Boolean =false,selectedProfile:Boolean=false,selectedMyPortfolios:Boolean=false) {
     NavigationBar(
         modifier=modifier,
         containerColor = MyColors.Primary,
         contentColor = Color.White,
         ) {
         NavigationBarItem(
-            selected = false,
+            selected = selectedHome,
             onClick = { navController.navigate("HomeScreen") },
             icon = { Icon(Icons.Default.Home, contentDescription = null) },
             label = { Text("Home") },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
+                selectedIconColor = Color.Black,
                 unselectedIconColor = Color.White,
                 selectedTextColor = Color.White,
                 unselectedTextColor = Color.White
-            )
-
+            ),
+            modifier = if (selectedHome)  Modifier.background(Color.White.copy(alpha = 0.1f))
+                        else Modifier
             )
         NavigationBarItem(
-            selected = false,
+            selected = selectedProfile,
             onClick = { navController.navigate("ProfileScreen") },
             icon = { Icon(Icons.Default.AccountCircle, contentDescription = null) },
             label = { Text("Profile") },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
+                selectedIconColor = Color.Black,
                 unselectedIconColor = Color.White,
                 selectedTextColor = Color.White,
                 unselectedTextColor = Color.White
-            )
+            ),
+            modifier = if (selectedProfile)  Modifier.background(Color.White.copy(alpha = 0.1f))
+            else Modifier
         )
         NavigationBarItem(
-            selected = false,
+            selected = selectedMyPortfolios,
             onClick = { /*TODO*/ },
             icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
             label = { Text("My portfolios") },
             colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color.White,
+                selectedIconColor = Color.Black,
                 unselectedIconColor = Color.White,
                 selectedTextColor = Color.White,
                 unselectedTextColor = Color.White
-            )
+            ),
+            modifier = if (selectedMyPortfolios)  Modifier.background(Color.White.copy(alpha = 0.1f))
+            else Modifier
         )
 
 
@@ -156,13 +132,7 @@ fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier) {
     }
     
 }
-//@Preview
-//@Composable
-//fun BottomNavigationPreview() {
-//    ProjectAppTheme {
-//        BottomNavigation()
-//    }
-//}
+
 
 @Preview
 @Composable

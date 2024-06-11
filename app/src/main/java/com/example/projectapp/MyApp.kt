@@ -12,7 +12,7 @@ fun MyApp() {
     val viewModel = AuthViewModel()
     NavHost(navController = navController, startDestination = "welcomeScreen") {
         composable("welcomeScreen"){
-            WelcomeScreen(navController)
+            WelcomeScreen(navController,viewModel)
         }
         composable("loginScreen"){
             LoginScreen(navController,viewModel)
