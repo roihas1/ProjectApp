@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,6 +56,7 @@ fun CustomTextField(
 ) {
 
     var passwordVisibility by remember { mutableStateOf(false)}
+
 
     val iconVisibility = if (passwordVisibility)
         painterResource(id =R.drawable.visibility)
@@ -100,10 +103,11 @@ fun LoginScreen(navController: NavController,
                 viewModel: AuthViewModel,
                 modifier: Modifier=Modifier
 ) {
-    val loginState = viewModel.loginState
+    var loginState = viewModel.loginState
     var password by rememberSaveable { mutableStateOf("") }
     var username by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+    var showErrorDialog by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -130,6 +134,9 @@ fun LoginScreen(navController: NavController,
             isPassword = true,
             label = "Password"
         )
+        if (showErrorDialog){
+            Text(text = "Wrong username or password. Please try again.") // todo change it to mutable variable and design it
+        }
 
         FunctionButton(
             text = "Login",
@@ -139,7 +146,7 @@ fun LoginScreen(navController: NavController,
                         .show()
                 }
                 else {
-                    navController.navigate("HomeScreen")
+//                    navController.navigate("HomeScreen")
                     viewModel.login(navController)
                 }
 //                navController.navigate("HomeScreen")
@@ -148,6 +155,21 @@ fun LoginScreen(navController: NavController,
         Spacer(modifier = modifier.height(48.dp))
         FooterCreateAccount(modifier,navController,viewModel)
     }
+//    if (showErrorDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showErrorDialog = false },
+//            title = { Text(text = "Error") },
+//            text = { Text(text = "Wrong username or password. Please try again.") },
+//            confirmButton = {
+//                Button(onClick = {
+////                    loginState = LoginState.Loading
+//                    showErrorDialog = false
+//                }) {
+//                    Text("OK")
+//                }
+//            }
+//        )
+//    }
     when (loginState) {
         is LoginState.Loading -> {
 
@@ -157,7 +179,10 @@ fun LoginScreen(navController: NavController,
             Text("Login Successful!")
         }
         is LoginState.Error -> {
-            Text("Error: ${loginState.message}")
+            showErrorDialog = true
+//            Toast.makeText(context, "wrong password/username", Toast.LENGTH_LONG)
+//                .show()
+//            Text("Error: ${loginState.message}")
         }
         else -> {}
     }

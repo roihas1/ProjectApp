@@ -30,12 +30,14 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             loginState = LoginState.Loading
             try {
+
                 val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
                     loginState = LoginState.Success(response.body())
                     navController.navigate("HomeScreen")
                 } else {
                     loginState = LoginState.Error("Login failed: ${response.message()}")
+
                 }
             } catch (e: Exception) {
                 loginState = LoginState.Error("An error occurred: ${e.message}")
@@ -50,7 +52,6 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             signUpState = SignUpState.Loading
             try {
-                Log.println(Log.INFO,"on track","enter api")
                 val response = RetrofitInstance.api.signUp(SignUpRequest(
                     email,firstName,lastName,phoneNumber,  password, rePassword
                 ))
