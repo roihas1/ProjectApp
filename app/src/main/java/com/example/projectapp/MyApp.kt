@@ -5,47 +5,49 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import com.example.projectapp.viewmodel.AuthViewModel
+import com.example.projectapp.viewmodel.SurveyViewModel
 
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
-    val viewModel = AuthViewModel()
+    val authViewModel = AuthViewModel()
+    val surveyViewModel = SurveyViewModel()
     NavHost(navController = navController, startDestination = "welcomeScreen") {
         composable("welcomeScreen"){
-            WelcomeScreen(navController,viewModel)
+            WelcomeScreen(navController,authViewModel)
         }
         composable("loginScreen"){
-            LoginScreen(navController,viewModel)
+            LoginScreen(navController,authViewModel)
         }
         composable("SignupScreen"){
-            SignUpScreen(navController,viewModel)
+            SignUpScreen(navController,authViewModel)
         }
         composable("HomeScreen"){
             HomeScreen(navController)
         }
         composable("ProfileScreen"){
-            ProfileScreen(navController,viewModel)
+            ProfileScreen(navController,authViewModel)
         }
         composable("changePassword"){
             ChangePasswordScreen(navController)
         }
         composable("question1") {
-            SurveyScreen(navController, 1, "Do you want to use machine learning?",listOf("No", "Yes"))
+            SurveyScreen(navController, surveyViewModel,1, "Do you want to use machine learning?",listOf("No", "Yes"))
         }
         composable("question2") {
-            SurveyScreen(navController, 2, "Choose model",listOf("Markowitz","Gini"))
+            SurveyScreen(navController, surveyViewModel,2, "Choose model",listOf("Markowitz","Gini"))
         }
         composable("question3") {
-            SurveyScreen(navController, 3, "Choose your collection",listOf("Indexes(recommended)", "Top indexes", "Indexes and stocks","Top stocks"))
+            SurveyScreen(navController,surveyViewModel, 3, "Choose your collection",listOf("Indexes(recommended)", "Top indexes", "Indexes and stocks","Top stocks"))
         }
         composable("question4") {
-            SurveyScreen(navController, 4, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-100"))
+            SurveyScreen(navController, surveyViewModel,4, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-100"))
         }
         composable("question5") {
-            SurveyScreen(navController, 5, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
+            SurveyScreen(navController, surveyViewModel,5, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
         }
         composable("question6") {
-            SurveyScreen(navController, 6, "Which graph do you prefer?",listOf("Safest", "Sharpe", "Max return"))
+            SurveyScreen(navController, surveyViewModel,6, "Which graph do you prefer?",listOf("Safest", "Sharpe", "Max return"))
         }
         composable("summary") {
             SummaryScreen(navController)

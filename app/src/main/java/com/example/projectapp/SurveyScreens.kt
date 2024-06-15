@@ -22,12 +22,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.projectapp.ui.theme.ProjectAppTheme
-
-
+import com.example.projectapp.viewmodel.SurveyViewModel
 
 
 @Composable
-fun SurveyScreen(navController: NavHostController, questionNumber: Int, question: String,answers: List<String>) {
+fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, questionNumber: Int, question: String, answers: List<String>) {
     var selectedAnswer by remember { mutableStateOf("") }
     var showDialogForAnswer by remember { mutableStateOf(false) }
     var answerClicked by remember { mutableStateOf("") }
@@ -82,7 +81,10 @@ fun SurveyScreen(navController: NavHostController, questionNumber: Int, question
                 ) {
                     RadioButton(
                         selected = selectedAnswer == answer,
-                        onClick = { selectedAnswer = answer },
+                        onClick = {
+                            selectedAnswer = answer
+                            viewModel.saveAnswer(questionNumber, answer)
+                                  },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Color.White,
                             unselectedColor = Color.White.copy(alpha = 0.6f)
@@ -154,9 +156,10 @@ fun SurveyScreen(navController: NavHostController, questionNumber: Int, question
             } else {
                 FunctionButton(
                     modifier = Modifier,
-                    onClick = { navController.navigate("summary") },
+                    onClick = {  if (viewModel.isSurveyComplete()) navController.navigate("summary") },
                     text = "Finish",
-                    buttonWidth = 130.dp
+                    buttonWidth = 130.dp,
+                    enabled = viewModel.isSurveyComplete()
                 )
 
             }
@@ -252,7 +255,8 @@ fun StockListDialogPreview(){
 fun DefaultPreview() {
     ProjectAppTheme {
         val navController = rememberNavController()
-        SurveyScreen(navController,1,"Thank you for completing the survey!",listOf("Apple", "Banana", "Cherry"))
+        val viewModel = SurveyViewModel()
+        SurveyScreen(navController,viewModel,1,"Thank you for completing the survey!",listOf("Apple", "Banana", "Cherry"))
     }
     
 }
