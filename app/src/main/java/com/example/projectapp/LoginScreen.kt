@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +40,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.AuthViewModel
 import com.example.projectapp.viewmodel.LoginState
-import com.example.projectapp.viewmodel.SignUpState
 
 
 @Composable
@@ -51,7 +48,7 @@ fun CustomTextField(
     value: String,
     label: String,
     onValueChange: (String) -> Unit,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     isPassword: Boolean = false
 ) {
 
@@ -69,7 +66,11 @@ fun CustomTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
-            leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(imageVector = icon, contentDescription = null)
+                }
+            },
             shape = MaterialTheme.shapes.large,
             visualTransformation= if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -92,7 +93,11 @@ fun CustomTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
-            leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+            leadingIcon = {
+                if (icon != null) {
+                    Icon(imageVector = icon, contentDescription = null)
+                }
+            },
             shape = MaterialTheme.shapes.large,
         )
     }

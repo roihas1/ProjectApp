@@ -1,16 +1,18 @@
 package com.example.projectapp
+import android.icu.text.NumberFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -116,11 +118,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
     )
     var clickedStocks by remember {mutableIntStateOf(-1) }
 
-//    DisposableEffect(Unit) {
-//        onDispose {
-//            viewModel.clearAnswers()
-//        }
-//    }
 
     Column(
         modifier = Modifier
@@ -200,7 +197,29 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                 }
             }
         }
+        var investmentAmount by remember { mutableStateOf(405610) }
+        var textInput by remember { mutableStateOf(investmentAmount.toString()) }
 
+        CustomTextField(
+            value = textInput,
+            label = "Amount",
+            onValueChange = { newValue ->
+                textInput = newValue
+                val newAmount = newValue.toIntOrNull()
+                if (newAmount != null) {
+                    investmentAmount = newAmount
+                }
+            }
+        )
+
+        Slider(
+            value = investmentAmount.toFloat(),
+            onValueChange = {newValue ->
+                investmentAmount = newValue.toInt()
+                textInput = newValue.toInt().toString()
+                            } ,
+            valueRange = 25000f..1000000f
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -241,6 +260,11 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
             }
         BottomNavigation(navController)
     }
+}
+private fun formatCurrency(amount: String): String {
+    val format = NumberFormat.getCurrencyInstance(java.util.Locale("he", "IL"))
+    format.maximumFractionDigits = 0
+    return format.format(amount)
 }
 @Composable
 fun StockListDialog(

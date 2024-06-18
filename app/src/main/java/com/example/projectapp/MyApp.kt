@@ -32,21 +32,24 @@ fun MyApp() {
             ChangePasswordScreen(navController)
         }
         composable("question1") {
-            SurveyScreen(navController, surveyViewModel,1, "Do you want to use machine learning?",listOf("No", "Yes"))
+            SurveyScreen(navController, surveyViewModel,1, "The amount I will deposit into my portfolio in shekels is:",listOf())
         }
         composable("question2") {
-            SurveyScreen(navController, surveyViewModel,2, "Choose model",listOf("Markowitz","Gini"))
+            SurveyScreen(navController, surveyViewModel,1, "Do you want to use machine learning?",listOf("No", "Yes"))
         }
         composable("question3") {
-            SurveyScreen(navController,surveyViewModel, 3, "Choose your collection",listOf("Indexes(recommended)", "Top indexes", "Indexes and stocks","Top stocks"))
+            SurveyScreen(navController, surveyViewModel,2, "Choose model",listOf("Markowitz","Gini"))
         }
         composable("question4") {
-            SurveyScreen(navController, surveyViewModel,4, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-100"))
+            SurveyScreen(navController,surveyViewModel, 3, "Choose your collection",listOf("Indexes(recommended)", "Top indexes", "Indexes and stocks","Top stocks"))
         }
         composable("question5") {
-            SurveyScreen(navController, surveyViewModel,5, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
+            SurveyScreen(navController, surveyViewModel,4, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-100"))
         }
         composable("question6") {
+            SurveyScreen(navController, surveyViewModel,5, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
+        }
+        composable("question7") {
             SurveyScreen(navController, surveyViewModel,6, "Which graph do you prefer?",listOf("Safest", "Sharpe", "Max return"))
         }
         composable("summary") {
