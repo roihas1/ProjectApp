@@ -27,29 +27,100 @@ import com.example.projectapp.viewmodel.SurveyViewModel
 
 @Composable
 fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, questionNumber: Int, question: String, answers: List<String>) {
-    var selectedAnswer by remember { mutableStateOf("") }
+    var selectedAnswer by remember { mutableStateOf(viewModel.getAnswer(questionNumber)) }
     var showDialogForAnswer by remember { mutableStateOf(false) }
     var answerClicked by remember { mutableStateOf("") }
     val allStocks = listOf(
         listOf(
-            "AAPL", "MSFT", "GOOGL", "AMZN", "FB",
-            "TSLA", "NVDA", "INTC", "ADBE", "CSCO"
+            "601 - All-Bond כללי",
+            "602 - תל גוב-כללי",
+            "700 - תל גוב-שקלי",
+            "701 - תל גוב-משתנה",
+            "702 - תל גוב-שקלי 0-2",
+            "142 - ת\"א-35",
+            "143 - ת\"א-90",
+            "SPY - SPDR S&P 500",
+            "QQQ - Invesco QQQ Trust, Series 1",
+            "^RUT - Russell 2000",
+            "IEI - iShares 3-7 Year Treasury Bond",
+            "LQD - iShares iBoxx $ Investment Grade",
+            "GSG - iShares GSCI Commodity-Indexed",
+            "GLD - SPDR Gold Trust",
+            "OIL - iPath Pure Beta Crude Oil ETN"
         ),
         listOf(
-            "PG", "KO", "PEP", "PM", "MO",
-            "KMB", "CL", "HSY", "K", "GIS"
+            "658 - תל גוב-צמודות 5-10",
+            "690 - תל גוב-לא צמודות",
+            "637 - תל גוב- צמודות 0-2",
+            "XLK - SPDR Select Sector Fund - Techn",
+            "SHV - iShares Short Treasury Bond ETF",
+            "700 - תל גוב-שקלי",
+            "704 - תל גוב-שקלי 5+",
+            "QQQ - Invesco QQQ Trust, Series 1",
+            "IEI - iShares 3-7 Year Treasury Bond",
+            "LQD - iShares iBoxx $ Investment Grade",
+            "GLD - SPDR Gold Trust",
+            "127 - חיפושי גז ונפט מניות והמירים",
+            "143 - ת\"א-90",
+            "603 - אג\"ח כללי - קונצרני",
+            "702 - תל גוב-שקלי 0-2",
+            "712 - תל בונד צמודות-יתר",
+            "170 - ת\"א-נפט וגז",
+            "OIL - iPath Pure Beta Crude Oil ETN",
+            "701 - תל גוב-משתנה"
         ),
         listOf(
-            "JPM", "BAC", "WFC", "C", "GS",
-            "MS", "AXP", "BK", "USB", "SCHW"
+            "170 - ת\"א-נפט וגז",
+            "603 - אג\"ח כללי - קונצרני",
+            "601 - All-Bond כללי",
+            "690 - תל גוב-לא צמודות",
+            "637 - תל גוב-צמודות 0-2",
+            "704 - תל גוב-שקלי 5+",
+            "701 - תל גוב-משתנה",
+            "714 - תל בונד-תשואות",
+            "XLK - SPDR Select Sector Fund - Techn",
+            "XLV - SPDR Select Sector Fund - Healt",
+            "XOP - SPDR S&P Oil & Gas Explor & Pro",
+            "QQQ - Invesco QQQ Trust, Series 1",
+            "SHV - iShares Short Treasury Bond ETF",
+            "273011 - נייס",
+            "695437 - מזרחי טפחות",
+            "593038 - בינלאומי",
+            "LMB - Limbach Holdings Inc. Common Stock",
+            "AGM - Federal Agricultural Mortgage Corporation Common Stock",
+            "TDS - Telephone and Data Systems Inc. Common Shares",
+            "MCD - McDonald's Corporation Common Stock",
+            "FMY - First Trust Motgage Income Fund Common Shares of Beneficial Interest",
+            "EOI - Eaton Vance Enhance Equity Income Fund Eaton Vance Enhanced Equity Income Fund Shares of Beneficial Interest"
         ),
         listOf(
-            "SPX", "IXIC", "DJI", "RUT", "FTSE",
-            "DAX", "CAC", "NIKKEI", "HSI", "ASX"
+            "TSLA - Tesla Inc. Common Stock",
+            "ADBE - Adobe Inc. Common Stock",
+            "JNJ - Johnson & Johnson Common Stock",
+            "EOI - Eaton Vance Enhance Equity Income Fund Eaton Vance Enhanced Equity Income Fund Shares of Beneficial Interest",
+            "AAPL - Apple Inc. Common Stock",
+            "AMZN - Amazon.com Inc. Common Stock",
+            "MSFT - Microsoft Corporation Common Stock",
+            "GOOG - Alphabet Inc. Class C Capital Stock",
+            "META - Meta Platforms Inc. Class A Common Stock",
+            "NVDA - NVIDIA Corporation Common Stock",
+            "AJG - Arthur J. Gallagher & Co. Common Stock",
+            "BRO - Brown & Brown Inc. Common Stock",
+            "BAC - Bank of America Corporation Common Stock",
+            "CSL - Carlisle Companies Incorporated Common Stock",
+            "593038 - בינלאומי",
+            "273011 - נייס",
+            "442012 - סיאי",
+            "1081124 - אלביט מערכות"
         )
     )
     var clickedStocks by remember {mutableIntStateOf(-1) }
 
+//    DisposableEffect(Unit) {
+//        onDispose {
+//            viewModel.clearAnswers()
+//        }
+//    }
 
     Column(
         modifier = Modifier
@@ -130,9 +201,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
             }
         }
 
-
-
-
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -164,7 +232,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
 
             }
         }
-
             if (showDialogForAnswer) {
                 StockListDialog(
                     onDismissRequest = { showDialogForAnswer = false },
@@ -172,8 +239,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                     portfolioDescription = answerClicked
                 )
             }
-
-
         BottomNavigation(navController)
     }
 }
@@ -216,7 +281,7 @@ fun StockListDialog(
 
 
 @Composable
-fun SummaryScreen(navController: NavHostController) {
+fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
 
     Column(
         modifier = Modifier
@@ -230,7 +295,10 @@ fun SummaryScreen(navController: NavHostController) {
             style = MaterialTheme.typography.labelMedium)
         FunctionButton(
             modifier = Modifier,
-            onClick = { navController.navigate("HomeScreen") },
+            onClick = {
+                viewModel.clearAnswers()
+                navController.navigate("HomeScreen")
+                      },
             text = "Back Home Page",
             buttonWidth = 260.dp
         )

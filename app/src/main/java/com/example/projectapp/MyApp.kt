@@ -50,7 +50,7 @@ fun MyApp() {
             SurveyScreen(navController, surveyViewModel,6, "Which graph do you prefer?",listOf("Safest", "Sharpe", "Max return"))
         }
         composable("summary") {
-            SummaryScreen(navController)
+            SummaryScreen(navController,surveyViewModel)
         }
     }
 }

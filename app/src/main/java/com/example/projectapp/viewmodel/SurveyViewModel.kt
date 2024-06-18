@@ -24,4 +24,7 @@ class SurveyViewModel : ViewModel() {
     fun isSurveyComplete(): Boolean {
         return answers.value.size == totalQuestions
     }
+    fun clearAnswers() {
+        answers.value.clear()
+    }
 }

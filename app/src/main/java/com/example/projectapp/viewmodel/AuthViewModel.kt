@@ -10,8 +10,10 @@ import com.example.projectapp.model.LoginResponse
 import com.example.projectapp.model.SignUpRequest
 import com.example.projectapp.model.SignUpResponse
 import com.example.projectapp.network.RetrofitInstance
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 
@@ -33,8 +35,15 @@ class AuthViewModel : ViewModel() {
 
                 val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
-                    loginState = LoginState.Success(response.body())
-                    navController.navigate("HomeScreen")
+                    withContext(Dispatchers.Main) {
+                        val body = response.body()
+                        firstName = body?.user?.first_name.toString()
+                        lastName = body?.user?.last_name.toString()
+
+                        loginState = LoginState.Success(response.body())
+                        Log.i("info", "helloooo $firstName")
+                        navController.navigate("HomeScreen")
+                    }
                 } else {
                     loginState = LoginState.Error("Login failed: ${response.message()}")
 
