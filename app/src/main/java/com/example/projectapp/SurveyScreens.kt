@@ -32,6 +32,8 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
     var selectedAnswer by remember { mutableStateOf(viewModel.getAnswer(questionNumber)) }
     var showDialogForAnswer by remember { mutableStateOf(false) }
     var answerClicked by remember { mutableStateOf("") }
+    var investmentAmount by remember { mutableStateOf(405610) }
+    var textInput by remember { mutableStateOf(investmentAmount.toString()) }
     val allStocks = listOf(
         listOf(
             "601 - All-Bond כללי",
@@ -126,7 +128,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        
+
         Text(
             modifier = Modifier
                 .padding(24.dp),
@@ -159,7 +161,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    if (questionNumber == 3){
+                    if (questionNumber == 4){
                         TextButton(onClick = {
                             showDialogForAnswer = true
                             if (answer == "Indexes(recommended)") {
@@ -197,29 +199,42 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                 }
             }
         }
-        var investmentAmount by remember { mutableStateOf(405610) }
-        var textInput by remember { mutableStateOf(investmentAmount.toString()) }
+        if (questionNumber == 1) {
 
-        CustomTextField(
-            value = textInput,
-            label = "Amount",
-            onValueChange = { newValue ->
-                textInput = newValue
-                val newAmount = newValue.toIntOrNull()
-                if (newAmount != null) {
-                    investmentAmount = newAmount
+            CustomTextField(
+                value = viewModel.getAnswer(1),
+                label = "Amount",
+                onValueChange = { newValue ->
+                    textInput = newValue
+                    val newAmount = newValue.toIntOrNull()
+                    if (newAmount != null) {
+                        investmentAmount = newAmount
+                        viewModel.saveAnswer(questionNumber, textInput)
+                    }
                 }
-            }
-        )
+            )
 
-        Slider(
-            value = investmentAmount.toFloat(),
-            onValueChange = {newValue ->
-                investmentAmount = newValue.toInt()
-                textInput = newValue.toInt().toString()
-                            } ,
-            valueRange = 25000f..1000000f
-        )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "₪ 25,000")
+                var sliderAmount = if (viewModel.getAnswer(1) == "")  investmentAmount else viewModel.getAnswer(1).toFloat()
+                Slider(
+                    value = sliderAmount.toFloat() ,
+                    onValueChange = { newValue ->
+                        investmentAmount = newValue.toInt()
+                        textInput = newValue.toInt().toString()
+                        viewModel.saveAnswer(questionNumber, textInput)
+                    },
+                    valueRange = 25000f..1000000f,
+                    steps = 0,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(text = "₪ 1,000,000")
+            }
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -233,7 +248,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                 enabled = questionNumber > 1  // Disable the button for the first question
             )
 
-            if (questionNumber < 6) {
+            if (questionNumber < 7) {
                 FunctionButton(
                     modifier = Modifier,
                     onClick = { navController.navigate("question${questionNumber + 1}") },
