@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.SurveyViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -34,6 +35,9 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
     var answerClicked by remember { mutableStateOf("") }
     var investmentAmount by remember { mutableStateOf(405610) }
     var textInput by remember { mutableStateOf(investmentAmount.toString()) }
+    var firstResponse by remember { mutableStateOf(listOf(listOf(""))) }
+    val coroutineScope = rememberCoroutineScope()
+
     val allStocks = listOf(
         listOf(
             "601 - All-Bond כללי",
@@ -119,7 +123,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
         )
     )
     var clickedStocks by remember {mutableIntStateOf(-1) }
-
+    var clickedRisks by remember {mutableIntStateOf(-1) }
 
     Column(
         modifier = Modifier
@@ -189,6 +193,23 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
 
                         }
                     }
+                    else if (questionNumber == 6) {
+                        showDialogForAnswer = true
+                        when(answer){
+                            "Low" -> {
+                                clickedRisks = 0
+                                answerClicked ="Low"
+                            }
+                            "Medium" -> {
+                                clickedRisks = 1
+                                answerClicked ="Medium"
+                            }
+                            "High" -> {
+                                clickedRisks = 2
+                                answerClicked ="High"
+                            }
+                        }
+                    }
                     else {
                         Text(
                             text = answer,
@@ -251,7 +272,14 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
             if (questionNumber < 7) {
                 FunctionButton(
                     modifier = Modifier,
-                    onClick = { navController.navigate("question${questionNumber + 1}") },
+                    onClick = {
+                        if (questionNumber == 5){
+                            coroutineScope.launch {
+                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value) as List<List<String>>
+
+                            }
+                        }
+                            navController.navigate("question${questionNumber + 1}") },
                     text = "Next",
                     buttonWidth = 120.dp
                 )
@@ -267,6 +295,13 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
             }
         }
             if (showDialogForAnswer) {
+                if (questionNumber == 6){
+                    StockListDialog(
+                        onDismissRequest = { showDialogForAnswer = false },
+                        stockList = firstResponse[clickedRisks],
+                        portfolioDescription = answerClicked
+                    )
+                }
                 StockListDialog(
                     onDismissRequest = { showDialogForAnswer = false },
                     stockList = allStocks[clickedStocks],
