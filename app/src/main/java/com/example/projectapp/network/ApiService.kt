@@ -14,15 +14,17 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST("users/login/check/")
+    @POST("users/login/custom_login_system/")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
-
+    @GET("users/login/custom_login_system/")
+    suspend fun getToken():Response<LoginResponse>
     @POST("users/signup/")
     suspend fun signUp(@Body request: SignUpRequest): Response<SignUpResponse>
 
     @POST("our_core/form/1/")
+//    @POST("users/check/")
     suspend fun form1(@Body request: Form1Request): Response<Form1Response>
 
     @GET("data_mgmt/get_plot_data/1/")
-    fun getPlotData1():Response<FirstDataResponse>
+    suspend fun getPlotData1():Response<FirstDataResponse>
 }

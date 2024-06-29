@@ -1,5 +1,7 @@
 package com.example.projectapp
 import android.icu.text.NumberFormat
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.LoginState
+import com.example.projectapp.viewmodel.SurveyState
 import com.example.projectapp.viewmodel.SurveyViewModel
 import kotlinx.coroutines.launch
 
@@ -37,6 +42,8 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
     var textInput by remember { mutableStateOf(investmentAmount.toString()) }
     var firstResponse by remember { mutableStateOf(listOf(listOf(""))) }
     val coroutineScope = rememberCoroutineScope()
+    var surveyState = viewModel.surveyState
+    val context = LocalContext.current
 
     val allStocks = listOf(
         listOf(
@@ -194,21 +201,31 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                         }
                     }
                     else if (questionNumber == 6) {
-                        showDialogForAnswer = true
-                        when(answer){
-                            "Low" -> {
-                                clickedRisks = 0
-                                answerClicked ="Low"
-                            }
-                            "Medium" -> {
-                                clickedRisks = 1
-                                answerClicked ="Medium"
-                            }
-                            "High" -> {
-                                clickedRisks = 2
-                                answerClicked ="High"
-                            }
+                        TextButton(
+                            onClick = {
+                            showDialogForAnswer = true
+                            when(answer){
+                                "Low" -> {
+                                    clickedRisks = 0
+                                    answerClicked ="Low"
+                                }
+                                "Medium" -> {
+                                    clickedRisks = 1
+                                    answerClicked ="Medium"
+                                }
+                                "High" -> {
+                                    clickedRisks = 2
+                                    answerClicked ="High"
+                                }
+                            } }) {
+                            Text(
+                                text = answer,
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+
                         }
+
                     }
                     else {
                         Text(
@@ -276,7 +293,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                         if (questionNumber == 5){
                             coroutineScope.launch {
                                 firstResponse = viewModel.firstForm(viewModel.getAnswers().value) as List<List<String>>
-
                             }
                         }
                             navController.navigate("question${questionNumber + 1}") },
@@ -309,6 +325,22 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel, q
                 )
             }
         BottomNavigation(navController)
+    }
+
+    when (surveyState) {
+        is SurveyState.Loading -> {
+
+        }
+        is SurveyState.Success -> {
+            Text("Successful!")
+        }
+        is SurveyState.Error -> {
+            Toast.makeText(context, surveyState.message, Toast.LENGTH_LONG)
+                .show()
+            Log.e("fff",surveyState.message)
+
+        }
+        else -> {}
     }
 }
 private fun formatCurrency(amount: String): String {

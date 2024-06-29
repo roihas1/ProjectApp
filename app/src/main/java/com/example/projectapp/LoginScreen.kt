@@ -106,6 +106,7 @@ fun CustomTextField(
 @Composable
 fun LoginScreen(navController: NavController,
                 viewModel: AuthViewModel,
+                sessionManager: SessionManager,
                 modifier: Modifier=Modifier
 ) {
     var loginState = viewModel.loginState
@@ -152,7 +153,7 @@ fun LoginScreen(navController: NavController,
                 }
                 else {
 //                    navController.navigate("HomeScreen")
-                    viewModel.login(navController)
+                    viewModel.login(navController,sessionManager)
                 }
 //                navController.navigate("HomeScreen")
             }
@@ -160,21 +161,7 @@ fun LoginScreen(navController: NavController,
         Spacer(modifier = modifier.height(48.dp))
         FooterCreateAccount(modifier,navController,viewModel)
     }
-//    if (showErrorDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showErrorDialog = false },
-//            title = { Text(text = "Error") },
-//            text = { Text(text = "Wrong username or password. Please try again.") },
-//            confirmButton = {
-//                Button(onClick = {
-////                    loginState = LoginState.Loading
-//                    showErrorDialog = false
-//                }) {
-//                    Text("OK")
-//                }
-//            }
-//        )
-//    }
+
     when (loginState) {
         is LoginState.Loading -> {
 
@@ -199,8 +186,10 @@ fun LoginScreen(navController: NavController,
 fun LoginScreenPreview() {
     ProjectAppTheme {
         val navController = rememberNavController()
+        val context = LocalContext.current
         val viewModel = AuthViewModel()
-        LoginScreen(navController,viewModel)
+        val session = SessionManager(context)
+        LoginScreen(navController,viewModel,session)
     }
 
 }

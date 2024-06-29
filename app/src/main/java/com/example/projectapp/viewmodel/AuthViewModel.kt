@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.projectapp.SessionManager
 import com.example.projectapp.model.LoginRequest
 import com.example.projectapp.model.LoginResponse
 import com.example.projectapp.model.SignUpRequest
@@ -27,21 +28,51 @@ class AuthViewModel : ViewModel() {
     var rePassword by mutableStateOf("")
     var loginState by mutableStateOf<LoginState>(LoginState.Idle)
     var signUpState by mutableStateOf<SignUpState>(SignUpState.Idle)
+    var token by mutableStateOf("")
 
-    fun login(navController: NavController) {
+    private fun extractCsrfToken(cookies: List<String>): String? {
+        return cookies.firstOrNull { it.startsWith("csrftoken=") }
+            ?.substringAfter("csrftoken=")
+            ?.substringBefore(";")
+    }
+    private fun extractSessionId(cookies: List<String>): String? {
+        return cookies.firstOrNull { it.startsWith("sessionid=") }
+            ?.substringAfter("sessionid=")
+            ?.substringBefore(";")
+    }
+    fun login(navController: NavController,sessionManager: SessionManager) {
         viewModelScope.launch {
             loginState = LoginState.Loading
             try {
-
+                val tokenResponse = RetrofitInstance.api.getToken()
+                var cookies = tokenResponse.headers().values("Set-Cookie")
+                Log.i("login-cookie",tokenResponse.headers().values("Set-Cookie").toString())
+                var csrfToken = extractCsrfToken(cookies)
+                if (csrfToken != null) {
+                    sessionManager.saveCsrfToken(csrfToken)
+                }
                 val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
                         val body = response.body()
                         firstName = body?.user?.first_name.toString()
                         lastName = body?.user?.last_name.toString()
+                        token = body?.token.toString()
 
+                        Log.i("login-cookie",response.headers().values("Set-Cookie").toString())
+                        cookies = response.headers().values("Set-Cookie")
+                        val sessionId = extractSessionId(cookies)
+                        csrfToken = extractCsrfToken(cookies)
+                        if (sessionId != null) {
+                            sessionManager.saveSessionId(sessionId)
+                        }
+                        csrfToken?.let { sessionManager.saveCsrfToken(it) }
+                        if (sessionId != null) {
+                            Log.i("infoooo", sessionId)
+                        }
                         loginState = LoginState.Success(response.body())
-                        Log.i("info", "helloooo $firstName")
+
+                        Log.i("info", "helloooo $token" )
                         navController.navigate("HomeScreen")
                     }
                 } else {

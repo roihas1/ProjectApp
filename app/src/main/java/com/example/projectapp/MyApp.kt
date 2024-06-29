@@ -1,6 +1,7 @@
 package com.example.projectapp
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
@@ -12,12 +13,14 @@ fun MyApp() {
     val navController = rememberNavController()
     val authViewModel = AuthViewModel()
     val surveyViewModel = SurveyViewModel()
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
     NavHost(navController = navController, startDestination = "welcomeScreen") {
         composable("welcomeScreen"){
             WelcomeScreen(navController,authViewModel)
         }
         composable("loginScreen"){
-            LoginScreen(navController,authViewModel)
+            LoginScreen(navController,authViewModel,sessionManager)
         }
         composable("SignupScreen"){
             SignUpScreen(navController,authViewModel)
