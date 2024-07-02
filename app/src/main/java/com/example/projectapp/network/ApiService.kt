@@ -27,4 +27,7 @@ interface ApiService {
 
     @GET("data_mgmt/get_plot_data/1/")
     suspend fun getPlotData1():Response<FirstDataResponse>
+
+    @POST("users/logout/")
+    suspend fun logout(@Body request: LoginRequest): Response<LoginResponse>
 }

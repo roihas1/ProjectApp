@@ -50,7 +50,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
             .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant)))
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(26.dp)
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Title()
         Column(
@@ -144,7 +144,6 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        Toast.makeText(context, "enter to api func", Toast.LENGTH_SHORT).show()
                         viewModel.signUp(navController)
 //                        navController.navigate("HomeScreen")
                     }

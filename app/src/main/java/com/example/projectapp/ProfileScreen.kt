@@ -70,7 +70,7 @@ import com.example.projectapp.viewmodel.AuthViewModel
 import org.json.JSONObject
 
 @Composable
-fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifier: Modifier = Modifier){
+fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessionManager: SessionManager,modifier: Modifier = Modifier){
     var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("User Name") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
@@ -96,9 +96,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifi
                 FunctionButton(
                     modifier = Modifier,
                     onClick = {
-                        viewModel.resetState()
-                        navController.navigate("welcomeScreen")
-                              },// todo insert logout functionality
+                        viewModel.logout(navController,sessionManager)
+                              },
                     text = "Logout",
                     buttonWidth = 120.dp,
                     textSize = 16.sp
@@ -206,16 +205,18 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, modifi
 
 
 
-@Preview
-@Composable
-fun ProfileScreenPreview() {
-    ProjectAppTheme {
-        val navController = rememberNavController()
-        val viewModel = AuthViewModel()
-        ProfileScreen(navController,viewModel)
-    }
-
-}
+//@Preview
+//@Composable
+//fun ProfileScreenPreview() {
+//    ProjectAppTheme {
+//        val
+//        val navController = rememberNavController()
+//        val viewModel = AuthViewModel()
+//        val sessionManager = SessionManager()
+//        ProfileScreen(navController,viewModel)
+//    }
+//
+//}
 
 //
 //@Composable

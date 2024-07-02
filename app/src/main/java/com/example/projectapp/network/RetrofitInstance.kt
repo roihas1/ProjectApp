@@ -35,15 +35,10 @@ class SessionInterceptor(private val sessionManager: SessionManager) : Intercept
         }
 
         sessionId?.let {
-            newRequestBuilder.header("Cookie", "sessionid=$it")
+            newRequestBuilder.addHeader("Cookie", "sessionid=$it")
         }
-//        val newRequest = originalRequest.newBuilder()
-//            .addHeader("X-CSRFToken", "$csrfToken")
-//            .header("Cookie", "csrftoken=$csrfToken")
-//            .header("Cookie","sessionid=$sessionId")
-//            .build()
         val newRequest = newRequestBuilder.build()
-        return chain.proceed(newRequestBuilder.build())
+        return chain.proceed(newRequest)
     }
 
     private fun shouldAddCsrfToken(method: String, url: String): Boolean {
@@ -53,11 +48,11 @@ class SessionInterceptor(private val sessionManager: SessionManager) : Intercept
 
     private fun shouldNotAddHeaders(method: String,url: String): Boolean {
         return url.endsWith("users/login/custom_login_system/")
-                && method.equals("GET",ignoreCase = true)
+                && method.equals("GET",ignoreCase = true) || url.endsWith("users/signup/")
     }
 }
 object RetrofitInstance {
-    private const val BASE_URL = "http://192.168.1.22:8000/"
+    private const val BASE_URL = "http://192.168.68.107:8000/"
 
     private val client by lazy {
         val sessionManager = SessionManager(MyAppInstance.context) // Pass your application context

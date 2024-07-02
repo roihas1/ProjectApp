@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.projectapp.SessionManager
 import com.example.projectapp.model.FirstDataResponse
 import com.example.projectapp.model.Form1Request
 
@@ -14,7 +15,7 @@ import com.example.projectapp.network.RetrofitInstance
 import kotlinx.coroutines.launch
 
 class SurveyViewModel : ViewModel() {
-    private val totalQuestions = 6
+    private val totalQuestions = 7
     private val answers = mutableStateOf(mutableMapOf<Int, String>())
     var surveyState by mutableStateOf<SurveyState>(SurveyState.Idle)
 
@@ -31,6 +32,7 @@ class SurveyViewModel : ViewModel() {
         return answers
     }
     fun isSurveyComplete(): Boolean {
+        println(answers)
         return answers.value.size == totalQuestions
     }
     fun clearAnswers() {
@@ -38,7 +40,7 @@ class SurveyViewModel : ViewModel() {
     }
 
 
-    suspend fun firstForm(answers: MutableMap<Int, String>): List<Any> {
+    suspend fun firstForm(answers: MutableMap<Int, String>,sessionManager: SessionManager): List<Any> {
         var result: List<Any> = listOf()
         viewModelScope.launch {
             surveyState = SurveyState.Loading
@@ -46,7 +48,7 @@ class SurveyViewModel : ViewModel() {
             val mlAnswerString = currentAnswers[2]
             val mlAnswer = if (mlAnswerString == "No") 0 else 1
             val modelAnswer = if (currentAnswers[3] == "Markowitz") 0 else 1
-
+            sessionManager.getCsrfToken()?.let { Log.i("infoooo", it) }
             try {
                 val response = RetrofitInstance.api.form1(Form1Request(mlAnswer, modelAnswer))
                 if (response.isSuccessful) {

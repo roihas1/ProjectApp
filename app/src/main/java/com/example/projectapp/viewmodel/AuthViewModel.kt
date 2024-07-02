@@ -44,13 +44,13 @@ class AuthViewModel : ViewModel() {
         viewModelScope.launch {
             loginState = LoginState.Loading
             try {
-                val tokenResponse = RetrofitInstance.api.getToken()
-                var cookies = tokenResponse.headers().values("Set-Cookie")
-                Log.i("login-cookie",tokenResponse.headers().values("Set-Cookie").toString())
-                var csrfToken = extractCsrfToken(cookies)
-                if (csrfToken != null) {
-                    sessionManager.saveCsrfToken(csrfToken)
-                }
+////                val tokenResponse = RetrofitInstance.api.getToken()
+//                var cookies = tokenResponse.headers().values("Set-Cookie")
+//                Log.i("login-cookie",tokenResponse.headers().values("Set-Cookie").toString())
+//                var csrfToken = extractCsrfToken(cookies)
+//                if (csrfToken != null) {
+//                    sessionManager.saveCsrfToken(csrfToken)
+//                }
                 val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
@@ -60,15 +60,15 @@ class AuthViewModel : ViewModel() {
                         token = body?.token.toString()
 
                         Log.i("login-cookie",response.headers().values("Set-Cookie").toString())
-                        cookies = response.headers().values("Set-Cookie")
+                        val cookies = response.headers().values("Set-Cookie")
                         val sessionId = extractSessionId(cookies)
-                        csrfToken = extractCsrfToken(cookies)
+                        val csrfToken = extractCsrfToken(cookies)
                         if (sessionId != null) {
                             sessionManager.saveSessionId(sessionId)
                         }
                         csrfToken?.let { sessionManager.saveCsrfToken(it) }
-                        if (sessionId != null) {
-                            Log.i("infoooo", sessionId)
+                        if (csrfToken != null) {
+                            Log.i("infoooo", csrfToken)
                         }
                         loginState = LoginState.Success(response.body())
 
@@ -97,12 +97,22 @@ class AuthViewModel : ViewModel() {
                 ))
                 if (response.isSuccessful) {
                     signUpState = SignUpState.Success(response.body())
-                    navController.navigate("HomeScreen")
+                    navController.navigate("LoginScreen")
                 } else {
                     signUpState = SignUpState.Error("Sign-up failed: ${response.message()}")
                 }
             } catch (e: Exception) {
                 signUpState = SignUpState.Error("An error occurred: ${e.message}")
+            }
+        }
+    }
+    fun logout(navController: NavController,sessionManager: SessionManager){
+        viewModelScope.launch {
+            val response = RetrofitInstance.api.logout(LoginRequest(email,password))
+            if (response.isSuccessful){
+                resetState()
+                sessionManager.clearSession()
+                navController.navigate("welcomeScreen")
             }
         }
     }
@@ -116,6 +126,7 @@ class AuthViewModel : ViewModel() {
         loginState = LoginState.Idle
         signUpState = SignUpState.Idle
     }
+
 }
 
 sealed class LoginState {
