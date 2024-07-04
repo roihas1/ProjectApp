@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -78,7 +79,7 @@ fun HomeScreen(navController: NavController,
 }
 
 @Composable
-fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,selectedHome:Boolean =false,selectedProfile:Boolean=false,selectedMyPortfolios:Boolean=false) {
+fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,selectedHome:Boolean =false,selectedProfile:Boolean=false,selectedAbout:Boolean=false) {
     NavigationBar(
         modifier=modifier,
         containerColor = MyColors.Primary,
@@ -113,17 +114,17 @@ fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,se
             else Modifier
         )
         NavigationBarItem(
-            selected = selectedMyPortfolios,
-            onClick = { /*TODO*/ },
-            icon = { Icon(Icons.Default.Favorite, contentDescription = null) },
-            label = { Text("My portfolios") },
+            selected = selectedAbout,
+            onClick = {  navController.navigate("AboutScreen") },
+            icon = { Icon(Icons.Default.Info, contentDescription = null) },
+            label = { Text("About") },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = Color.Black,
                 unselectedIconColor = Color.White,
                 selectedTextColor = Color.White,
                 unselectedTextColor = Color.White
             ),
-            modifier = if (selectedMyPortfolios)  Modifier.background(Color.White.copy(alpha = 0.1f))
+            modifier = if (selectedAbout)  Modifier.background(Color.White.copy(alpha = 0.1f))
             else Modifier
         )
 

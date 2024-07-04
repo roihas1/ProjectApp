@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.SurveyState
 import com.example.projectapp.viewmodel.SurveyViewModel
@@ -43,6 +44,8 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
     val coroutineScope = rememberCoroutineScope()
     var surveyState = viewModel.surveyState
     val context = LocalContext.current
+    var expanded by remember { mutableStateOf(false) }
+
     firstResponse = listOf(
         listOf(
             "Low Risk",
@@ -197,11 +200,41 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                 .padding(24.dp),
             text = question,
             color = Color.White,
-            fontSize = 18.sp,
-            style = MaterialTheme.typography.bodyMedium
+            fontSize = 22.sp,
+            style = MaterialTheme.typography.titleLarge
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        FunctionButton(
+            onClick = { expanded = !expanded },
+            text = "Why is it important?",
+            buttonWidth = 260.dp,
+            textSize = 16.sp
+        )
+        var infoText = ""
+        if (expanded){
+            when(questionNumber){
+                1 -> infoText="This minimum amount is intended to allow us to build an investment portfolio," +
+                        " which will be sufficiently spread over a variety of avenues, according to the needs of each client."
+                2 -> infoText = "Asking whether you want to use machine learning allows us to utilize advanced analytics " +
+                        "for making informed decisions and creating personalized strategies."
+                3 -> infoText ="Choosing between the Markowitz or Gini model lets us align the investment approach with your " +
+                        "comfort level and understanding of risk. The Markowitz model focuses on optimizing returns based on risk," +
+                        " while the Gini model emphasizes income distribution and inequality measures."
+                4 -> infoText = "Selecting your preferred collection, whether indexes or stocks, determines the focus of your investments," +
+                        " helping us decide between a broad market exposure or a high-reward strategy.\nClick on the answer to learn more."
+                5 -> infoText="Knowing your investment horizon ensures that we match assets and strategies with your time frame, " +
+                        "aligning them with your long-term financial goals."
+
+            }
+            Text(
+                modifier = Modifier.padding(16.dp),
+                text = infoText,
+                color = Color.White,
+                fontSize = 12.sp
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -309,7 +342,10 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "₪ 25,000")
+                Text(
+                    text = "₪ 25,000",
+                    color=Color.White
+                )
                 val sliderAmount = if (viewModel.getAnswer(1) == "")  investmentAmount else viewModel.getAnswer(1).toFloat()
                 Slider(
                     value = sliderAmount.toFloat() ,
@@ -318,11 +354,14 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                         textInput = newValue.toInt().toString()
                         viewModel.saveAnswer(questionNumber, textInput)
                     },
-                    valueRange = 25000f..1000000f,
+                    valueRange = 25000f..500000f,
                     steps = 0,
                     modifier = Modifier.weight(1f)
                 )
-                Text(text = "₪ 1,000,000")
+                Text(
+                    text = "₪ 500,000",
+                    color=Color.White
+                )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -332,22 +371,23 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
         ) {
             FunctionButton(
                 modifier = Modifier,
-                onClick = { if (questionNumber > 1) navController.navigate("question${questionNumber - 1}") },
+                onClick = { if (questionNumber > 1) navController.popBackStack()},
                 text = "Back",
                 buttonWidth = 130.dp,
                 enabled = questionNumber > 1  // Disable the button for the first question
             )
 
-            if (questionNumber < 7) {
+            if (questionNumber < 6) {
                 FunctionButton(
                     modifier = Modifier,
                     onClick = {
                         if (questionNumber == 5){
                             coroutineScope.launch {
                                 firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
+
                             }
                         }
-                        if (questionNumber ==5){
+                        if (questionNumber == 5){
                             navController.navigate("question6")
                         }else{
                             navController.navigate("question${questionNumber + 1}")
@@ -448,6 +488,8 @@ fun StockListDialog(
 
 @Composable
 fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val answer1 = navBackStackEntry?.arguments?.getString("answer")
     val labels = listOf(
         "601 Weight",
         "602 Weight",
@@ -476,6 +518,11 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
         0.029759780932897,
         0.0080423452192741
     )
+    val clearAnswersAndNavigate = {
+        viewModel.clearAnswers()
+        navController.navigate("HomeScreen")
+    }
+    Log.i("check string",viewModel.getAnswer(1))
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -502,29 +549,31 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
         }
         Divider(modifier = Modifier.padding(horizontal = 8.dp), color = Color.White, thickness = 1.dp)
         Text(
-            text = "My investment: 25,000",
+            text = "My investment: $answer1",
             color = Color.White,
             style = MaterialTheme.typography.titleSmall
         )
 
-        PieChartScreen(
-            labels = labels,
-            fractions =weights,
-            investAmount = 25000.0
-        )
+        if (answer1 != null) {
+            PieChartScreen(
+                labels = labels,
+                fractions =weights,
+                investAmount = answer1.toDouble()
+            )
+        }
 
         FunctionButton(
             modifier = Modifier,
-            onClick = {
-                viewModel.clearAnswers()
-                navController.navigate("HomeScreen")
-                      },
+            onClick =
+                clearAnswersAndNavigate
+                      ,
             text = "Back Home Page",
             buttonWidth = 260.dp
         )
         BottomNavigation(navController)
     }
 }
+
 @Composable
 @Preview
 fun StockListDialogPreview(){

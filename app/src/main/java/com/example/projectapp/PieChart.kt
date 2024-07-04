@@ -105,17 +105,19 @@ fun Table(slices: List<Slice>, investAmount: Double) {
                 text = "Label",
                 modifier = Modifier.weight(1f),
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color=Color.White
             )
 
             Text(
                 text = "Amount to invest",
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color=Color.White
             )
         }
 
-        Divider(color = Color.Black, thickness = 1.dp)
+        Divider(color = Color.White, thickness = 1.dp)
 
         // Display two slices per row
         repeat(sortedSlices.size / 2) { index ->
@@ -139,14 +141,16 @@ fun Table(slices: List<Slice>, investAmount: Double) {
 
                 Text(
                     text = slice1.label,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    color=Color.White
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
                     text = "%.1f".format(investAmount * (slice1.value / total.toFloat())),
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    color=Color.White
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))
@@ -163,14 +167,16 @@ fun Table(slices: List<Slice>, investAmount: Double) {
 
                     Text(
                         text = slice.label,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        color=Color.White
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
 
                     Text(
                         text = "%.1f".format(investAmount * (slice.value / total.toFloat())),
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        color=Color.White
                     )
                 }
             }
@@ -196,14 +202,16 @@ fun Table(slices: List<Slice>, investAmount: Double) {
 
                 Text(
                     text = lastSlice.label,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    color=Color.White
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
 
                 Text(
                     text = "%.1f".format(investAmount * (lastSlice.value / total.toFloat())),
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    color=Color.White
                 )
             }
         }

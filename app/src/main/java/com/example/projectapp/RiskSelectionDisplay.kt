@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -61,13 +62,7 @@ fun RiskSelectionDisplay(
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
 
-        RiskLevelSelector(
-            currentRiskLevel = currentRisk.level,
-            onPrevious = { if (currentRiskIndex > 0) currentRiskIndex-- },
-            onNext = { if (currentRiskIndex < riskData.size - 1) currentRiskIndex++ }
-        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -82,13 +77,19 @@ fun RiskSelectionDisplay(
         RiskDescriptionCard(currentRisk)
 
         Spacer(modifier = Modifier.height(16.dp))
-        Spacer(modifier = Modifier.height(16.dp))
+
 
 //        AdditionalStatisticsCard(currentRisk)
 
 
+        Spacer(modifier = Modifier.height(24.dp))
 
-
+        RiskLevelSelector(
+            currentRiskLevel = currentRisk.level,
+            onPrevious = { if (currentRiskIndex > 0) currentRiskIndex-- },
+            onNext = { if (currentRiskIndex < riskData.size - 1) currentRiskIndex++ }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
         FunctionButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             onClick = {
@@ -98,23 +99,7 @@ fun RiskSelectionDisplay(
             text ="Confirm ${currentRisk.level} Selection" ,
             buttonWidth = 400.dp
         )
-//        Button(
-//            onClick = {
-//                surveyViewModel.saveAnswer(6, currentRisk.level)
-//                onRiskSelected(currentRisk)
-//            },
-//            modifier = Modifier
-//                .align(Alignment.CenterHorizontally)
-//                .fillMaxWidth()
-//                .height(56.dp),
-//            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-//        ) {
-//            Text(
-//                "Confirm ${currentRisk.level} Selection",
-//                color = MyColors.Primary,
-//                fontWeight = FontWeight.Bold
-//            )
-//        }
+
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -125,7 +110,9 @@ fun RiskSelectionDisplay(
 @Composable
 fun KeyStatisticsCard(riskData: RiskData) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
@@ -143,13 +130,48 @@ fun KeyStatisticsCard(riskData: RiskData) {
 
 @Composable
 fun StatColumn(label: String, value: Double, color: Color) {
+    var showInfoDialog by remember { mutableStateOf(false) }
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(label, style = MaterialTheme.typography.bodyMedium)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(label, style = MaterialTheme.typography.bodyMedium)
+            IconButton(onClick = { showInfoDialog = true }) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Info",
+                    tint = color
+                )
+            }
+        }
         Text(
             "${"%.2f".format(value)}%",
             style = MaterialTheme.typography.headlineMedium,
             color = color,
             fontWeight = FontWeight.Bold
+        )
+    }
+
+    if (showInfoDialog) {
+        AlertDialog(
+            onDismissRequest = { showInfoDialog = false },
+            title = {
+                Text(text = "What is $label?")
+            },
+            text = {
+                Text(
+                    text = when (label) {
+                        "Volatility" -> "Volatility measures the risk of your investment, indicating how much the value of the asset fluctuates over time."
+                        // Add more cases for other labels if needed
+                        else -> "Annual return refers to the percentage gain or loss of an investment over a one-year period," +
+                                " showing how much the investment has increased or decreased in value annually."
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showInfoDialog = false }) {
+                    Text("OK")
+                }
+            }
         )
     }
 }
@@ -169,7 +191,9 @@ fun VerticalDivider() {
 @Composable
 fun RiskDescriptionCard(riskData: RiskData) {
     Card(
-        modifier = Modifier.fillMaxWidth().padding(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

@@ -71,7 +71,7 @@ dependencies {
     implementation ("androidx.compose.material:material:1.6.8")
     implementation ("androidx.compose.ui:ui-tooling:1.6.8")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.2")
-
+    implementation ("androidx.browser:browser:1.8.0")
     implementation("co.yml:ycharts:2.1.0")
 
 
