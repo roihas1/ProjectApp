@@ -491,38 +491,29 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val answer1 = navBackStackEntry?.arguments?.getString("answer")
     val labels = listOf(
-        "601 Weight",
-        "602 Weight",
-        "700 Weight",
-        "701 Weight",
-        "702 Weight",
-        "142 Weight",
-        "143 Weight",
-        "SPY Weight",
-        "QQQ Weight",
-        "^RUT Weight",
-        "IEI Weight",
-        "LQD Weight"
+        "Tesla, Inc.",
+        "Adobe Inc.",
+        "Johnson & Johnson",
+        "Wix",
+        "Apple Inc.",
+        "Amazon.com, Inc.",
+        "Microsoft Corporation",
+        "Alphabet Inc.",
+        "Meta Platforms, Inc.",
+        "NVIDIA Corporation",
+        "Arthur J. Gallagher & Co.",
+        "Brown & Brown, Inc.",
+        "Samsung Co., Ltd.",
+
     )
     val weights = listOf(
-        0.1984728351097274,
-        0.0596214738325715,
-        0.0111922971923062,
-        0.3505506045618785,
-        0.2628909022713126,
-        0.0088979980053999,
-        0.0310551766001429,
-        0.0101047076399928,
-        0.0275666378367544,
-        0.0018452407977424,
-        0.029759780932897,
-        0.0080423452192741
+        0.08, 0.02, 0.15, 0.09, 0.1, 0.05, 0.1, 0.12, 0.03, 0.08, 0.07, 0.1, 0.01
     )
     val clearAnswersAndNavigate = {
         viewModel.clearAnswers()
         navController.navigate("HomeScreen")
     }
-    Log.i("check string",viewModel.getAnswer(1))
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -536,7 +527,7 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Text(
-                text = "Welcome to Your Portfolio Summary",
+                text = "Your Portfolio Summary",
                 color = Color.White,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -557,19 +548,27 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
         if (answer1 != null) {
             PieChartScreen(
                 labels = labels,
-                fractions =weights,
+                fractions = weights,
                 investAmount = answer1.toDouble()
             )
         }
+        Row {
+            FunctionButton(
+                modifier = Modifier,
+                onClick = clearAnswersAndNavigate,
+                text = "Back",
+                buttonWidth = 260.dp,
+                textSize = 20.sp
+            )
+            FunctionButton(
+                onClick = { /*TODO*/ },
+                text = "Save to ",
+                buttonWidth = 160.dp,
+                withIcon = true,
+                textSize = 20.sp
+            )
 
-        FunctionButton(
-            modifier = Modifier,
-            onClick =
-                clearAnswersAndNavigate
-                      ,
-            text = "Back Home Page",
-            buttonWidth = 260.dp
-        )
+        }
         BottomNavigation(navController)
     }
 }

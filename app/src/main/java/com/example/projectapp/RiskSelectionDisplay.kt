@@ -26,6 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.projectapp.viewmodel.SurveyViewModel
 import kotlin.time.times
+import kotlin.math.pow
 
 data class RiskData(
     val level: String,
@@ -303,8 +304,8 @@ fun ReturnRangeCard(surveyViewModel: SurveyViewModel,riskData: RiskData) {
         else -> numberOfYears
     }
 
-    val minRange = (riskData.min / 100 + 1) * numberOfYears.toDouble() * returnAmount.toDouble()
-    val maxRange = (riskData.max / 100 + 1) * numberOfYears.toDouble() * returnAmount.toDouble()
+    val minRange = ((riskData.min / 100 + 1).pow( numberOfYears.toDouble())) * returnAmount.toDouble()
+    val maxRange = ((riskData.max / 100 + 1) .pow( numberOfYears.toDouble())) * returnAmount.toDouble()
     val numberFormat = NumberFormat.getNumberInstance(Locale.US)
     numberFormat.maximumFractionDigits = 2
     numberFormat.minimumFractionDigits = 2

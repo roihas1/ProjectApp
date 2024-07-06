@@ -5,8 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+
+
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
@@ -21,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.IntOffset
@@ -85,139 +92,81 @@ fun PieChartScreen(labels: List<String>, fractions: List<Double>, investAmount: 
     Table(slices = slices, investAmount = investAmount)
 }
 @Composable
-fun Table(slices: List<Slice>, investAmount: Double) {
-    val total = slices.sumOf { it.value.toDouble() }
+fun Table(
+    slices: List<Slice>,
+    investAmount: Double,
+    modifier: Modifier = Modifier
+) {
+    val total = slices.sumOf { it.value }
     val sortedSlices = slices.sortedByDescending { it.value * investAmount / total }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        // Header row
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Label",
-                modifier = Modifier.weight(1f),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color=Color.White
-            )
-
-            Text(
-                text = "Amount to invest",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color=Color.White
-            )
-        }
-
-        Divider(color = Color.White, thickness = 1.dp)
-
-        // Display two slices per row
-        repeat(sortedSlices.size / 2) { index ->
-            val slice1 = sortedSlices[index * 2]
-            val slice2 = if (index * 2 + 1 < sortedSlices.size) sortedSlices[index * 2 + 1] else null
-
+    Column(modifier = modifier.height(250.dp)) {
+        // Fixed header
+        Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = 4.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // First slice
-                Box(
+                Text(
+                    text = "Label",
+                    modifier = Modifier.weight(1f),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Left
+                )
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Text(
+                    text = "Amount to invest",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Divider(color = Color.White, thickness = 1.dp)
+        }
+
+        // Scrollable content
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp)
+        ) {
+            items(sortedSlices) { slice ->
+                Row(
                     modifier = Modifier
-                        .size(16.dp)
-                        .background(slice1.color, CircleShape)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = slice1.label,
-                    fontSize = 14.sp,
-                    color=Color.White
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = "%.1f".format(investAmount * (slice1.value / total.toFloat())),
-                    fontSize = 14.sp,
-                    color=Color.White
-                )
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // Second slice (if exists)
-                slice2?.let { slice ->
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         modifier = Modifier
                             .size(16.dp)
                             .background(slice.color, CircleShape)
                     )
-
                     Spacer(modifier = Modifier.width(8.dp))
-
                     Text(
                         text = slice.label,
                         fontSize = 14.sp,
-                        color=Color.White
+                        color = Color.White,
+                        modifier = Modifier.weight(1f)
                     )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
                     Text(
-                        text = "%.1f".format(investAmount * (slice.value / total.toFloat())),
+                        text = "%.1f".format(investAmount * (slice.value / total)),
                         fontSize = 14.sp,
-                        color=Color.White
+                        color = Color.White,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.width(100.dp)
                     )
                 }
             }
         }
-
-        // If there's an odd number of slices, display the last slice in a separate row
-        if (sortedSlices.size % 2 == 1) {
-            val lastSlice = sortedSlices.last()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .background(lastSlice.color, CircleShape)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = lastSlice.label,
-                    fontSize = 14.sp,
-                    color=Color.White
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Text(
-                    text = "%.1f".format(investAmount * (lastSlice.value / total.toFloat())),
-                    fontSize = 14.sp,
-                    color=Color.White
-                )
-            }
-        }
     }
 }
-
 
 @Composable
 fun PieChart(
@@ -239,7 +188,8 @@ fun PieChart(
                     val canvasSize = size.height
                     val radius = canvasSize / 2F
                     val center = Offset(radius, radius)
-                    val touchAngle = (atan2(offset.y - center.y, offset.x - center.x) * (180 / PI)).toFloat()
+                    val touchAngle =
+                        (atan2(offset.y - center.y, offset.x - center.x) * (180 / PI)).toFloat()
                     val normalizedAngle = (touchAngle + 360) % 360
 
                     var cumulativeAngle = 0f
@@ -248,7 +198,8 @@ fun PieChart(
                         if (normalizedAngle in cumulativeAngle..((cumulativeAngle + sweepAngle).toFloat())) {
                             onSliceClicked(slice, normalizedAngle)
                             val sliceAngle = cumulativeAngle + sweepAngle / 2
-                            val popupRadius = radius * 0.7 // Adjust this value to position the popup
+                            val popupRadius =
+                                radius * 0.7 // Adjust this value to position the popup
                             popupOffset = Offset(
                                 (center.x + popupRadius * cos(sliceAngle * PI / 180).toFloat()).toFloat(),
                                 (center.y + popupRadius * sin(sliceAngle * PI / 180).toFloat()).toFloat()

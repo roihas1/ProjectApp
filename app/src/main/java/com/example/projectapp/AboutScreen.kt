@@ -25,9 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
@@ -51,15 +53,34 @@ fun AboutScreen(navController: NavController) {
                 .padding(16.dp)
                 .padding(bottom = 56.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top // Align content to the top
+            verticalArrangement = Arrangement.Top
         ) {
-            Text(
-                text = "About the App",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+            ) {
+                FunctionButton(
+                    onClick = { navController.navigate("ContactUs") },
+                    text = "Contact Us",
+                    buttonWidth = 100.dp,
+                    textSize = 8.sp,
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end=8.dp),
+
+                )
+
+                Text(
+                    text = "About the App",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                        .align(Alignment.CenterVertically),
+
+                )
+
+            }
             Text(
                 text = "Welcome to our recommendation portfolio app. " +
                         "Our goal is to provide you the best portfolio for you!",

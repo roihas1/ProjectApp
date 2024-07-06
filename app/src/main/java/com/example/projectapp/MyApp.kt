@@ -15,7 +15,7 @@ fun MyApp() {
     val surveyViewModel = SurveyViewModel()
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
-    NavHost(navController = navController, startDestination = "AboutScreen") {
+    NavHost(navController = navController, startDestination = "question6") {
         composable("welcomeScreen"){
             WelcomeScreen(navController,authViewModel)
         }
@@ -26,7 +26,7 @@ fun MyApp() {
             SignUpScreen(navController,authViewModel)
         }
         composable("HomeScreen"){
-            HomeScreen(navController)
+            HomeScreen(navController,surveyViewModel=surveyViewModel)
         }
         composable("ProfileScreen"){
             ProfileScreen(navController,authViewModel,sessionManager)
@@ -55,6 +55,9 @@ fun MyApp() {
         }
         composable("AboutScreen"){
             AboutScreen(navController)
+        }
+        composable("ContactUs"){
+            ContactUsScreen(navController = navController)
         }
 //        composable("question7") {
 //            SurveyScreen(navController, surveyViewModel,sessionManager,7, "Which graph do you prefer?",listOf("Safest", "Sharpe", "Max return"))

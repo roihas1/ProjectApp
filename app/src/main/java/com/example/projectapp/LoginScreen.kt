@@ -99,6 +99,7 @@ fun CustomTextField(
                 }
             },
             shape = MaterialTheme.shapes.large,
+            modifier = modifier
         )
     }
     

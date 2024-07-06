@@ -1,5 +1,7 @@
 package com.example.projectapp
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,18 +14,31 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,8 +92,13 @@ fun FunctionButton(
     contentPadding: PaddingValues = PaddingValues(16.dp),
     buttonPadding: PaddingValues = PaddingValues(8.dp),
     shape: RoundedCornerShape = RoundedCornerShape(26.dp),
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    withIcon:Boolean=false
 ) {
+    var isFilled by remember { mutableStateOf(false) }
+    val iconRotation by animateFloatAsState(if (isFilled) 360f else 0f, animationSpec = spring(),
+        label = ""
+    )
     val backgroundColors = if (enabled) {
         Brush.horizontalGradient(enabledBackgroundColors)
     } else {
@@ -95,7 +115,12 @@ fun FunctionButton(
         ),
         contentPadding = PaddingValues(),
         shape = shape,
-        onClick = onClick,
+        onClick = {
+            onClick()
+            if (withIcon) {
+                isFilled = !isFilled
+            }
+        },
         enabled = enabled
     ) {
         Box(
@@ -104,12 +129,35 @@ fun FunctionButton(
                 .background(backgroundColors),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = text,
-                modifier = Modifier.padding(contentPadding),
-                fontSize = textSize,
-                color = if (enabled) enabledTextColor else disabledTextColor
-            )
+            if(withIcon){
+                val rotationState = remember { mutableStateOf(0f) }
+                Row(
+                    modifier = Modifier.padding(contentPadding),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = text,
+                        color = if (enabled) enabledTextColor else disabledTextColor
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = if (isFilled) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = if (isFilled) "Filled Heart" else "Heart Outline",
+                        tint = if (enabled) enabledTextColor else disabledTextColor,
+                        modifier = Modifier.graphicsLayer(rotationZ = iconRotation)
+                    )
+                }
+
+            }
+            else {
+                Text(
+                    text = text,
+                    modifier = Modifier.padding(contentPadding),
+                    fontSize = textSize,
+                    color = if (enabled) enabledTextColor else disabledTextColor
+                )
+            }
+
         }
     }
 }

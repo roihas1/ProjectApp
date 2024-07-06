@@ -43,13 +43,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
+import com.example.projectapp.viewmodel.SurveyViewModel
 
 
 @Composable
 fun HomeScreen(navController: NavController,
-               modifier: Modifier = Modifier
+               modifier: Modifier = Modifier,
+               surveyViewModel:SurveyViewModel
+
 ) {
 
+    val answer = surveyViewModel.getAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
     Column ( modifier = modifier
         .fillMaxSize()
         .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
@@ -66,7 +70,7 @@ fun HomeScreen(navController: NavController,
             textSize = 32.sp
         )
         FunctionButton(
-            onClick = { },
+            onClick = { navController.navigate("summary/${answer}")},
             text ="Go To Last\n\n Portfolio",
             buttonWidth = 320.dp,
             contentPadding = PaddingValues(48.dp),
@@ -135,12 +139,12 @@ fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,se
 }
 
 
-@Preview
-@Composable
-fun HomeScreenPreview() {
-    ProjectAppTheme {
-        val navController = rememberNavController()
-        HomeScreen(navController)
-    }
-
-}
+//@Preview
+//@Composable
+//fun HomeScreenPreview() {
+//    ProjectAppTheme {
+//        val navController = rememberNavController()
+//        HomeScreen(navController)
+//    }
+//
+//}
