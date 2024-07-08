@@ -50,7 +50,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
             .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant)))
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Title()
         Column(
@@ -115,7 +115,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
 
         Row {
             FunctionButton(
-                modifier.padding(vertical = 120.dp),
+                modifier.padding(vertical = 80.dp),
                 onClick = {
                    viewModel.resetState()
                           },
@@ -124,7 +124,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 enabledBackgroundColors = listOf(MyColors.ButtonColor,MyColors.Secondary)
             )
             FunctionButton(
-                modifier = modifier.padding(vertical = 120.dp), // for allow scrolling and reach the confirm password field. ,
+                modifier = modifier.padding(vertical = 80.dp), // for allow scrolling and reach the confirm password field. ,
                 text = "Sign up",
                 onClick = {
 //                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -144,8 +144,8 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        viewModel.signUp(navController)
-//                        navController.navigate("HomeScreen")
+//                        viewModel.signUp(navController)
+                        navController.navigate("HomeScreen")
                     }
                 }
             )

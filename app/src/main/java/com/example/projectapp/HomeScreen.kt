@@ -52,8 +52,7 @@ fun HomeScreen(navController: NavController,
                surveyViewModel:SurveyViewModel
 
 ) {
-
-    val answer = surveyViewModel.getAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
+    val answer = surveyViewModel.getLastAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
     Column ( modifier = modifier
         .fillMaxSize()
         .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant))),
@@ -64,15 +63,15 @@ fun HomeScreen(navController: NavController,
         Title()
         FunctionButton(
             onClick = { navController.navigate("question1")},
-            text ="Create New\n\nInvestment\n\n  Portfolio",
-            buttonWidth = 320.dp,
+            text ="Create A New\n\nInvestment\n\nPortfolio",
+            buttonWidth = 280.dp,
             contentPadding = PaddingValues(30.dp),
             textSize = 32.sp
         )
         FunctionButton(
             onClick = { navController.navigate("summary/${answer}")},
             text ="Go To Last\n\n Portfolio",
-            buttonWidth = 320.dp,
+            buttonWidth = 280.dp,
             contentPadding = PaddingValues(48.dp),
             textSize = 32.sp
         )
@@ -135,7 +134,7 @@ fun BottomNavigation(navController: NavController,modifier: Modifier=Modifier,se
 
 
     }
-    
+
 }
 
 

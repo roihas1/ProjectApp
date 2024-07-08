@@ -18,6 +18,7 @@ class SurveyViewModel : ViewModel() {
     private val totalQuestions = 7
     private val answers = mutableStateOf(mutableMapOf<Int, String>())
     var surveyState by mutableStateOf<SurveyState>(SurveyState.Idle)
+    private var lastAnswers = mutableStateOf(mutableMapOf<Int, String>())
 
     fun saveAnswer(questionNumber: Int, answer: String) {
         val currentAnswers = answers.value.toMutableMap()
@@ -36,7 +37,11 @@ class SurveyViewModel : ViewModel() {
         return answers.value.size == totalQuestions
     }
     fun clearAnswers() {
+        lastAnswers.value = answers.value.toMutableMap()
         answers.value.clear()
+    }
+    fun getLastAnswer(questionNumber: Int): String {
+        return lastAnswers.value[questionNumber]?:""
     }
 
 

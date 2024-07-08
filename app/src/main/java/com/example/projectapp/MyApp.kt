@@ -1,5 +1,8 @@
 package com.example.projectapp
 
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -15,7 +18,7 @@ fun MyApp() {
     val surveyViewModel = SurveyViewModel()
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
-    NavHost(navController = navController, startDestination = "question6") {
+    NavHost(navController = navController, startDestination = "welcomeScreen") {
         composable("welcomeScreen"){
             WelcomeScreen(navController,authViewModel)
         }
@@ -65,9 +68,9 @@ fun MyApp() {
         composable("question6"){
             val answer = surveyViewModel.getAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
             RiskSelectionDisplay(riskData = listOf(
-                RiskData("Low Risk", 11.0, 6.82, -14.80, -1.18, 0.19, 1.06, 18.98),
-                RiskData("Medium Risk", 19.10, 17.73, -30.32, -1.84, 0.51, 1.93, 46.00),
-                RiskData("High Risk", 35.10, 25.46, -37.50, -2.50, 0.42, 2.82, 67.67)
+                RiskData("Low Risk", 4.5, 6.82, -2.80, -1.18, 0.19, 1.06, 7.98,0.864),
+                RiskData("Medium Risk", 8.67, 17.73, -4.32, -1.84, 0.51, 1.93, 12.00,1.425),
+                RiskData("High Risk", 11.34, 25.46, -7.50, -2.50, 0.42, 2.82, 18.67,1.047)
             ), onRiskSelected = { navController.navigate("summary/${answer}")
             },
                 surveyViewModel,navController)
@@ -76,4 +79,7 @@ fun MyApp() {
             SummaryScreen(navController,surveyViewModel)
         }
     }
+
+
+
 }

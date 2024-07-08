@@ -50,10 +50,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val labels = listOf("HP", "Dell", "Lenovo", "Asus", "Acer", "Others")
-                    val fractions = listOf(15f, 30f, 40f, 5f, 5f, 5f)
+
                     MyApp()
-//                    PieChartScreen(labels,fractions)
+
                 }
             }
         }

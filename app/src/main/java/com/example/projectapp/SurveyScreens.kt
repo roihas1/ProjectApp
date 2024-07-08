@@ -32,6 +32,106 @@ import com.example.projectapp.viewmodel.SurveyState
 import com.example.projectapp.viewmodel.SurveyViewModel
 import kotlinx.coroutines.launch
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import kotlinx.coroutines.delay
+
+
+@Composable
+fun InformationSection(
+    questionNumber: Int,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val rotationState by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing), label = ""
+    )
+
+    Column(modifier = modifier.padding(16.dp)) {
+        ElevatedCard(
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = MyColors.Primary)
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Why is it important?",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = if (expanded) "Collapse" else "Expand",
+                            tint = Color.White,
+                            modifier = Modifier.rotate(rotationState)
+                        )
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = expandVertically(
+                        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                    ) + fadeIn(animationSpec = tween(durationMillis = 300)),
+                    exit = shrinkVertically(
+                        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+                    ) + fadeOut(animationSpec = tween(durationMillis = 300))
+                ) {
+                    val infoText = when (questionNumber) {
+                        1 -> "This minimum amount is intended to allow us to build an investment portfolio, which will be sufficiently spread over a variety of avenues, according to the needs of each client."
+                        2 -> "Asking whether you want to use machine learning allows us to utilize advanced analytics for making informed decisions and creating personalized strategies."
+                        3 -> "Choosing between the Markowitz or Gini model lets us align the investment approach with your comfort level and understanding of risk. The Markowitz model focuses on optimizing returns based on risk, while the Gini model emphasizes income distribution and inequality measures."
+                        4 -> "Selecting your preferred collection, whether indexes or stocks, determines the focus of your investments, helping us decide between a broad market exposure or a high-reward strategy.\nClick on the answer to learn more."
+                        5 -> "Knowing your investment horizon ensures that we match assets and strategies with your time frame, aligning them with your long-term financial goals."
+                        else -> ""
+                    }
+
+                    Text(
+                        text = infoText,
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,sessionManager:SessionManager, questionNumber: Int, question: String, answers: List<String>) {
@@ -197,44 +297,15 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
 
         Text(
             modifier = Modifier
-                .padding(24.dp),
+                .padding(20.dp),
             text = question,
             color = Color.White,
-            fontSize = 22.sp,
-            style = MaterialTheme.typography.titleLarge
+            fontSize = 32.sp,
+            style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        InformationSection(questionNumber)
 
-        FunctionButton(
-            onClick = { expanded = !expanded },
-            text = "Why is it important?",
-            buttonWidth = 260.dp,
-            textSize = 16.sp
-        )
-        var infoText = ""
-        if (expanded){
-            when(questionNumber){
-                1 -> infoText="This minimum amount is intended to allow us to build an investment portfolio," +
-                        " which will be sufficiently spread over a variety of avenues, according to the needs of each client."
-                2 -> infoText = "Asking whether you want to use machine learning allows us to utilize advanced analytics " +
-                        "for making informed decisions and creating personalized strategies."
-                3 -> infoText ="Choosing between the Markowitz or Gini model lets us align the investment approach with your " +
-                        "comfort level and understanding of risk. The Markowitz model focuses on optimizing returns based on risk," +
-                        " while the Gini model emphasizes income distribution and inequality measures."
-                4 -> infoText = "Selecting your preferred collection, whether indexes or stocks, determines the focus of your investments," +
-                        " helping us decide between a broad market exposure or a high-reward strategy.\nClick on the answer to learn more."
-                5 -> infoText="Knowing your investment horizon ensures that we match assets and strategies with your time frame, " +
-                        "aligning them with your long-term financial goals."
-
-            }
-            Text(
-                modifier = Modifier.padding(16.dp),
-                text = infoText,
-                color = Color.White,
-                fontSize = 12.sp
-            )
-        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -285,33 +356,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
 
                         }
                     }
-                    else if (questionNumber == 6) {
-                        TextButton(
-                            onClick = {
-                            showDialogForAnswer = true
-                            when(answer){
-                                "Low" -> {
-                                    clickedRisks = 0
-                                    answerClicked ="Low"
-                                }
-                                "Medium" -> {
-                                    clickedRisks = 1
-                                    answerClicked ="Medium"
-                                }
-                                "High" -> {
-                                    clickedRisks = 2
-                                    answerClicked ="High"
-                                }
-                            } }) {
-                            Text(
-                                text = answer,
-                                color = Color.White,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
 
-                        }
-
-                    }
                     else {
                         Text(
                             text = answer,
@@ -383,7 +428,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                     onClick = {
                         if (questionNumber == 5){
                             coroutineScope.launch {
-                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
+//                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
 
                             }
                         }
@@ -443,46 +488,84 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
         else -> {}
     }
 }
-private fun formatCurrency(amount: String): String {
-    val format = NumberFormat.getCurrencyInstance(java.util.Locale("he", "IL"))
-    format.maximumFractionDigits = 0
-    return format.format(amount)
-}
+
 @Composable
 fun StockListDialog(
     onDismissRequest: () -> Unit,
     stockList: List<String>,
     portfolioDescription: String
 ) {
-    AlertDialog(
+    var visible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+
+    Dialog(
         onDismissRequest = onDismissRequest,
-        title = {
-            Text(text = portfolioDescription, style = MaterialTheme.typography.bodyMedium)
-        },
-        text = {
-            LazyColumn {
-                items(stockList) { stock ->
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn() + scaleIn(initialScale = 0.8f) + slideInVertically(initialOffsetY = { it }),
+            exit = fadeOut() + scaleOut(targetScale = 0.8f) + slideOutVertically(targetOffsetY = { it })
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                tonalElevation = 8.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)  // Adjusted width
+                    .fillMaxHeight(0.5f) // Adjusted height
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
                     Text(
-                        text = stock,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .clickable {
-                                // Handle the selection of the stock/index
-                                onDismissRequest()
-                            }
+                        text = portfolioDescription,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
+
+                    LazyColumn(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        itemsIndexed(stockList) { index, stock ->
+                            var itemVisible by remember { mutableStateOf(false) }
+                            LaunchedEffect(Unit) {
+                                delay(index * 50L)
+                                itemVisible = true
+                            }
+                            AnimatedVisibility(
+                                visible = itemVisible,
+                                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+                            ) {
+                                Text(
+                                    text = stock,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            // Handle the selection of the stock/index
+                                            onDismissRequest()
+                                        }
+                                        .padding(vertical = 12.dp, horizontal = 8.dp)
+                                )
+                            }
+                            if (index < stockList.lastIndex) {
+                                Divider()
+                            }
+                        }
+                    }
+
+                    TextButton(
+                        onClick = onDismissRequest,
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text("Close")
+                    }
                 }
             }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = onDismissRequest
-            ) {
-                Text("Close")
-            }
         }
-    )
+    }
 }
 
 
@@ -491,23 +574,46 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val answer1 = navBackStackEntry?.arguments?.getString("answer")
     val labels = listOf(
-        "Tesla, Inc.",
-        "Adobe Inc.",
-        "Johnson & Johnson",
-        "Wix",
-        "Apple Inc.",
-        "Amazon.com, Inc.",
-        "Microsoft Corporation",
-        "Alphabet Inc.",
-        "Meta Platforms, Inc.",
-        "NVIDIA Corporation",
-        "Arthur J. Gallagher & Co.",
-        "Brown & Brown, Inc.",
-        "Samsung Co., Ltd.",
+        "TSLA - Tesla Inc.",
+            "ADBE - Adobe Inc.",
+            "JNJ - Johnson & Johnson",
+            "EOI - Eaton Vance Enhance Equity Income Fund",
+            "AAPL - Apple Inc.",
+            "AMZN - Amazon.com Inc.",
+            "MSFT - Microsoft Corporation",
+            "GOOG - Alphabet Inc.",
+            "META - Meta Platforms Inc.",
+            "NVDA - NVIDIA Corporation",
+            "AJG - Arthur J. Gallagher & Co.",
+            "BRO - Brown & Brown Inc.",
+            "BAC - Bank of America Corporation",
+            "CSL - Carlisle Companies Incorporated",
+            "593038 - בינלאומי",
+            "273011 - נייס",
+            "442012 - סיאי",
+            "1081124 - אלביט מערכות"
+//        )
 
     )
     val weights = listOf(
-        0.08, 0.02, 0.15, 0.09, 0.1, 0.05, 0.1, 0.12, 0.03, 0.08, 0.07, 0.1, 0.01
+        0.10,  // TSLA - Tesla Inc. Common Stock
+        0.06,  // ADBE - Adobe Inc. Common Stock
+        0.07,  // JNJ - Johnson & Johnson Common Stock
+        0.03,  // EOI - Eaton Vance Enhance Equity Income Fund
+        0.18,  // AAPL - Apple Inc. Common Stock
+        0.12,  // AMZN - Amazon.com Inc. Common Stock
+        0.15,  // MSFT - Microsoft Corporation Common Stock
+        0.06,  // GOOG - Alphabet Inc. Class C Capital Stock
+        0.04,  // META - Meta Platforms Inc. Class A Common Stock
+        0.05,  // NVDA - NVIDIA Corporation Common Stock
+        0.02,  // AJG - Arthur J. Gallagher & Co. Common Stock
+        0.02,  // BRO - Brown & Brown Inc. Common Stock
+        0.04,  // BAC - Bank of America Corporation Common Stock
+        0.02,  // CSL - Carlisle Companies Incorporated Common Stock
+        0.01,  // 593038 - בינלאומי
+        0.01,  // 273011 - נייס
+        0.01,  // 442012 - סיאי
+        0.01   // 1081124 - אלביט מערכות
     )
     val clearAnswersAndNavigate = {
         viewModel.clearAnswers()
@@ -543,6 +649,12 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
             text = "My investment: $answer1",
             color = Color.White,
             style = MaterialTheme.typography.titleSmall
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text="Tap on the Chart",
+            color = Color.White,
+            fontSize = 10.sp
         )
 
         if (answer1 != null) {

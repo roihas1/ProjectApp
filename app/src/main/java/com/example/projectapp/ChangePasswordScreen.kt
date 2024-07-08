@@ -32,7 +32,7 @@ import com.example.projectapp.ui.theme.ProjectAppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-//import kotlin.coroutines.jvm.internal.CompletedContinuation.context
+
 
 @Composable
 fun ChangePasswordScreen(navController: NavController,modifier: Modifier = Modifier){
@@ -51,10 +51,9 @@ fun ChangePasswordScreen(navController: NavController,modifier: Modifier = Modif
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Title()
         Text(
             text = "Change your password",
-            modifier = modifier
-                .padding(24.dp),
             style = TextStyle(fontSize = 24.sp),
             color = Color.White
         )
@@ -74,37 +73,24 @@ fun ChangePasswordScreen(navController: NavController,modifier: Modifier = Modif
                 label = "New Password",
                 onValueChange = {},
                 icon = Icons.Default.Person,
-                value = ""
+                value = "",
+                modifier = Modifier.padding(vertical = 16.dp)
 
             )
             val context = LocalContext.current
             val coroutineScope = rememberCoroutineScope()
-            Button(
-                onClick = {
+            FunctionButton(
+                onClick =
+                {
                     Toast.makeText(context, "Password has changed", Toast.LENGTH_SHORT).show()
                     coroutineScope.launch {
                         delay(2500)
                         navController.navigate("ProfileScreen")
-                    }
-                 },
-                modifier = Modifier
-                    .paddingFromBaseline(top = 24.dp,bottom = 8.dp),
-                shape = MaterialTheme.shapes.large,
-                contentPadding = PaddingValues(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MyColors.ButtonColor,
-                    containerColor = MyColors.ButtonColor
-                )
-            ) {
-                Text(
-                    modifier= Modifier.padding(0.dp),
-                    text= "Submit",
-                    fontSize = 12.sp,
-                    color= Color.White,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+                }
+                },
+                text = "Submit"
+            )
+
         }
         BottomNavigation(navController = navController)
     }

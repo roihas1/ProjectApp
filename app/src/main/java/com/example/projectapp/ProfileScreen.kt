@@ -74,6 +74,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
     var showDialog by remember { mutableStateOf(false) }
     var userName by remember { mutableStateOf("User Name") }
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
+    val fullName = if(viewModel.firstName + " " + viewModel.lastName == " ") "Yossi Israeli" else viewModel.firstName + " " + viewModel.lastName
+    val userEmail = if (viewModel.email == "") "example@bgu.ac.il" else viewModel.email
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -96,7 +98,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
                 FunctionButton(
                     modifier = Modifier,
                     onClick = {
-                        viewModel.logout(navController,sessionManager)
+                              navController.navigate("welcomeScreen")
+//                        viewModel.logout(navController,sessionManager)
                               },
                     text = "Logout",
                     buttonWidth = 120.dp,
@@ -158,14 +161,14 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
                 }
             }
             Text(
-                text = viewModel.firstName +" "+ viewModel.lastName,
+                text = fullName,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
                 color = Color.White
             )
             Text(
-                text = viewModel.email,
+                text = userEmail,
                 modifier = modifier
                     .padding(16.dp),
                 style = TextStyle(fontSize = 24.sp),
