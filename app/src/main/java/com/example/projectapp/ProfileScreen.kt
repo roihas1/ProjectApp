@@ -1,4 +1,5 @@
 package com.example.projectapp
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -69,6 +70,7 @@ import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.AuthViewModel
 import org.json.JSONObject
 
+
 @Composable
 fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessionManager: SessionManager,modifier: Modifier = Modifier){
     var showDialog by remember { mutableStateOf(false) }
@@ -76,6 +78,7 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
     var userImageUri by remember { mutableStateOf<Uri?>(null) }
     val fullName = if(viewModel.firstName + " " + viewModel.lastName == " ") "Yossi Israeli" else viewModel.firstName + " " + viewModel.lastName
     val userEmail = if (viewModel.email == "") "example@bgu.ac.il" else viewModel.email
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -208,98 +211,3 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
 
 
 
-//@Preview
-//@Composable
-//fun ProfileScreenPreview() {
-//    ProjectAppTheme {
-//        val
-//        val navController = rememberNavController()
-//        val viewModel = AuthViewModel()
-//        val sessionManager = SessionManager()
-//        ProfileScreen(navController,viewModel)
-//    }
-//
-//}
-
-//
-//@Composable
-//fun PokemonInfoScreen() {
-//    var pokemonInfo by remember { mutableStateOf("") }
-//
-//    val context = LocalContext.current
-//
-//    // Call fetchPokemonInfo when the Composable is first composed
-//    LaunchedEffect(Unit) {
-//        fetchPokemonInfo(context, pokemonId = 1,
-//            onSuccess = { info ->
-//                pokemonInfo = info
-//            },
-//            onError = { errorMessage ->
-//                pokemonInfo = errorMessage
-//            }
-//        )
-//    }
-//
-//    Column {
-//        Text(text = "Pokemon Information:")
-//        Text(text = pokemonInfo)
-//        Button(onClick = {
-//            // Call fetchPokemonInfo again when the button is clicked
-//            fetchPokemonInfo(context, pokemonId = 2,
-//                onSuccess = { info ->
-//                    pokemonInfo = info
-//                },
-//                onError = { errorMessage ->
-//                    pokemonInfo = errorMessage
-//                }
-//            )
-//        }) {
-//            Text(text = "Fetch Different Pokémon")
-//        }
-//    }
-//}
-//fun fetchPokemonInfo(context: Context, pokemonId: Int, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
-//    // Instantiate the RequestQueue.
-//    val requestQueue = Volley.newRequestQueue(context)
-//
-//    // URL of the API endpoint for the specified Pokémon ID.
-//    val url = "https://catfact.ninja/fact"
-//
-//    // Request a string response from the provided URL.
-//    val stringRequest = StringRequest(Request.Method.GET, url,
-//        { response ->
-//            try {
-//                // Parse the JSON response
-//                val jsonObject = JSONObject(response)
-//                val fact = jsonObject.getString("fact")
-//                val length = jsonObject.getString("length")
-//
-//
-//
-//                // Format the information
-//                val formattedInfo = "fact: ${fact}, length: ${length}"
-//
-//                // Call the onSuccess callback with the formatted information
-//                onSuccess.invoke(formattedInfo)
-//            } catch (e: Exception) {
-//                // Handle JSON parsing error
-//                onError.invoke("Error parsing JSON: ${e.message}")
-//            }
-//        },
-//        { error ->
-//            // Call the onError callback with the error message
-//            Log.println(Log.ERROR,"APII","errorrrrr: ${error.message}")
-//            onError.invoke("Error: ${error.message}")
-//
-//        })
-//
-//    // Add the request to the RequestQueue.
-//    requestQueue.add(stringRequest)
-//}
-//@Preview(showBackground = true)
-//@Composable
-//fun PokemonInfoScreenPreview() {
-//    ProjectAppTheme {
-//        PokemonInfoScreen()
-//    }
-//}

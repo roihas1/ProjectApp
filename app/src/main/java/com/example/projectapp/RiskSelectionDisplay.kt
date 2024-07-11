@@ -215,7 +215,8 @@ fun InfoDialog(showInfoDialog: Boolean, label: String, onDismissRequest: () -> U
                                 "Volatility" -> "Volatility measures the risk of your investment, indicating how much the value of the asset fluctuates over time.\nLow Volatility: typically less than 10% annual variation.\n" +
                                         "Moderate Volatility: typically 10% to 20% annual variation.\n" +
                                         "High Volatility: typically more than 20% annual variation."
-                                "Sharpe" -> "The Sharpe ratio measures how well an investment's returns compare to its risk. A higher Sharpe ratio means the investment has provided better returns relative to its risk level.0 to 1: Positive return, but may not fully compensate for risk.\n" +
+                                "Sharpe" -> "The Sharpe ratio measures how well an investment's returns compare to its risk. A higher Sharpe ratio means the investment has provided better returns relative to its risk level.\n" +
+                                        "0 to 1: Positive return, but may not fully compensate for risk.\n" +
                                         "1 to 2: Decent returns relative to risk.\n" +
                                         "Above 2: Good, indicates strong risk-adjusted returns.\n" +
                                         "Above 3: Very good, shows exceptional performance.\n" +

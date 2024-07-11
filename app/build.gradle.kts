@@ -75,10 +75,7 @@ dependencies {
     implementation("co.yml:ycharts:2.1.0")
 
 
-
-
-
-
+    
     // Debug dependencies
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
