@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -124,7 +126,7 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                 enabledBackgroundColors = listOf(MyColors.ButtonColor,MyColors.Secondary)
             )
             FunctionButton(
-                modifier = modifier.padding(vertical = 80.dp), // for allow scrolling and reach the confirm password field. ,
+                modifier = modifier.padding(vertical = 80.dp) .semantics { contentDescription = "SignUpButton" }, // for allow scrolling and reach the confirm password field. ,
                 text = "Sign up",
                 onClick = {
 //                    val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
@@ -144,8 +146,8 @@ fun SignUpScreen(navController: NavController, viewModel: AuthViewModel , modifi
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-//                        viewModel.signUp(navController)
-                        navController.navigate("HomeScreen")
+                        viewModel.signUp(navController)
+//                        navController.navigate("HomeScreen")
                     }
                 }
             )

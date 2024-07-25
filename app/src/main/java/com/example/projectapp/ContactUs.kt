@@ -96,7 +96,9 @@ fun ContactUsScreen(navController: NavController) {
             Row {
                 FunctionButton(
                     modifier = Modifier.padding(top = 16.dp),
-                    onClick = { navController.popBackStack() },
+                    onClick = {
+                        navController.popBackStack()
+                              },
                     text = "Back",
                     buttonWidth = 120.dp,
                     textSize = 18.sp

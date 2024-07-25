@@ -285,28 +285,28 @@ fun RiskDescriptionCard(riskData: RiskData) {
     }
 }
 
-@Composable
-fun AdditionalStatisticsCard(riskData: RiskData) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Additional Statistics",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MyColors.Primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            StatItem("Lowest Return", riskData.min)
-            StatItem("Highest Return", riskData.max)
-//            StatItem("Lower Quartile Return", riskData.q1)
-//            StatItem("Median Return", riskData.median)
-//            StatItem("Upper Quartile Return", riskData.q3)
-        }
-    }
-}
+//@Composable
+//fun AdditionalStatisticsCard(riskData: RiskData) {
+//    Card(
+//        modifier = Modifier.fillMaxWidth(),
+//        colors = CardDefaults.cardColors(containerColor = Color.White)
+//    ) {
+//        Column(modifier = Modifier.padding(16.dp)) {
+//            Text(
+//                text = "Additional Statistics",
+//                style = MaterialTheme.typography.titleMedium,
+//                fontWeight = FontWeight.Bold,
+//                color = MyColors.Primary
+//            )
+//            Spacer(modifier = Modifier.height(8.dp))
+//            StatItem("Lowest Return", riskData.min)
+//            StatItem("Highest Return", riskData.max)
+////            StatItem("Lower Quartile Return", riskData.q1)
+////            StatItem("Median Return", riskData.median)
+////            StatItem("Upper Quartile Return", riskData.q3)
+//        }
+//    }
+//}
 
 @Composable
 fun StatItem(label: String, value: Double) {
@@ -426,23 +426,4 @@ fun ReturnRangeCard(surveyViewModel: SurveyViewModel,riskData: RiskData) {
     }
 
 
-//@Composable
-//@Preview
-//fun RiskSelectionDisplayPrev() {
-//    val riskData = listOf(
-//        RiskData("Low Risk", 0.41, 6.82, -14.80, -1.18, 0.19, 1.06, 18.98),
-//        RiskData("Medium Risk", 1.91, 17.73, -30.32, -1.84, 0.51, 1.93, 46.00),
-//        RiskData("High Risk", 3.51, 25.46, -37.50, -2.50, 0.42, 2.82, 67.67)
-//    )
-//    val viewModel = SurveyViewModel()
-//    RiskSelectionDisplay(
-//        riskData = riskData,
-//        onRiskSelected = { selectedRisk ->
-//            // Handle the selected risk level
-//            println("Selected risk level: ${selectedRisk.level}")
-//        },
-//        viewModel
-//    )
-//
-//}
 

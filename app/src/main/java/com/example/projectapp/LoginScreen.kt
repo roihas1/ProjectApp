@@ -153,8 +153,8 @@ fun LoginScreen(navController: NavController,
                         .show()
                 }
                 else {
-                    navController.navigate("HomeScreen")
-//                    viewModel.login(navController,sessionManager)
+//                    navController.navigate("HomeScreen")
+                    viewModel.login(navController,sessionManager)
                 }
 //                navController.navigate("HomeScreen")
             }

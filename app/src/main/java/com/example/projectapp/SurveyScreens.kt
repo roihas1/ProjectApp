@@ -345,13 +345,13 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                     onClick = {
                         if (questionNumber == 5){
                             coroutineScope.launch {
-//                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
+                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
 
                             }
                         }
-                        if (questionNumber == 5){
-                            navController.navigate("question6")
-                        }else{
+//                        if (questionNumber == 5){
+//                            navController.navigate("question6")
+                        else{
                             navController.navigate("question${questionNumber + 1}")
                              }
                               },

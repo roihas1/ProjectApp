@@ -101,8 +101,8 @@ fun ProfileScreen(navController: NavController, viewModel: AuthViewModel, sessio
                 FunctionButton(
                     modifier = Modifier,
                     onClick = {
-                              navController.navigate("welcomeScreen")
-//                        viewModel.logout(navController,sessionManager)
+//                              navController.navigate("welcomeScreen")
+                        viewModel.logout(navController,sessionManager)
                               },
                     text = "Logout",
                     buttonWidth = 120.dp,

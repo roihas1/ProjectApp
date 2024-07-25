@@ -52,7 +52,7 @@ class SessionInterceptor(private val sessionManager: SessionManager) : Intercept
     }
 }
 object RetrofitInstance {
-    private const val BASE_URL = "http://192.168.68.107:8000/"
+    private const val BASE_URL = "http://192.168.1.24:8000/"
 
     private val client by lazy {
         val sessionManager = SessionManager(MyAppInstance.context) // Pass your application context

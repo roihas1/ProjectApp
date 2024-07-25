@@ -9,4 +9,9 @@ data class SignUpRequest(
     val password1: String,
     val password2: String
 )
+//data class SignUpRequest(
+//    val username:String,
+//    val email:String,
+//    val password:String
+//)
 
