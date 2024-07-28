@@ -3,6 +3,7 @@ package com.example.projectapp
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.AuthViewModel
 import com.example.projectapp.viewmodel.LoginState
+import com.example.projectapp.viewmodel.SurveyState
 
 
 @Composable
@@ -165,11 +169,33 @@ fun LoginScreen(navController: NavController,
 
     when (loginState) {
         is LoginState.Loading -> {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x80000000)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
         is LoginState.Success -> {
 //                navController.navigate("HomeScreen")
-            Text("Login Successful!")
+//            Text("Login Successful!")
         }
         is LoginState.Error -> {
             showErrorDialog = true

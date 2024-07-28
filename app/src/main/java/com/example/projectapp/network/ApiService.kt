@@ -8,6 +8,8 @@ import com.example.projectapp.model.LoginRequest
 import com.example.projectapp.model.LoginResponse
 import com.example.projectapp.model.SignUpRequest
 import com.example.projectapp.model.SignUpResponse
+import com.example.projectapp.model.StockWeightsResponse
+import com.example.projectapp.model.form2Request
 
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -22,11 +24,15 @@ interface ApiService {
     suspend fun signUp(@Body request: SignUpRequest): Response<SignUpResponse>
 
     @POST("/our_core/form/1/")
-//    @POST("users/check/")
     suspend fun form1(@Body request: Form1Request): Response<Form1Response>
+    @POST("/our_core/form/2/")
+    suspend fun form2(@Body request: form2Request): Response<Form1Response>
 
     @GET("/data_mgmt/get_plot_data/1/")
     suspend fun getPlotData1():Response<FirstDataResponse>
+
+    @GET("/data_mgmt/get_plot_data/2/")
+    suspend fun getPlotData2():Response<StockWeightsResponse>
 
     @POST("users/logout/")
     suspend fun logout(@Body request: LoginRequest): Response<LoginResponse>

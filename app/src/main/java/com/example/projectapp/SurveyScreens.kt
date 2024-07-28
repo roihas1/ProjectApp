@@ -1,13 +1,10 @@
 package com.example.projectapp
-import android.icu.text.NumberFormat
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -22,12 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.projectapp.ui.theme.ProjectAppTheme
 import com.example.projectapp.viewmodel.SurveyState
 import com.example.projectapp.viewmodel.SurveyViewModel
 import kotlinx.coroutines.launch
@@ -51,14 +46,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.projectapp.viewmodel.Weight
 import kotlinx.coroutines.delay
 
 
@@ -140,44 +138,11 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
     var answerClicked by remember { mutableStateOf("") }
     var investmentAmount by remember { mutableStateOf(405610) }
     var textInput by remember { mutableStateOf(investmentAmount.toString()) }
-    var firstResponse by remember { mutableStateOf(listOf(listOf(""))) }
+//    var firstResponse by remember { mutableStateOf(listOf(RiskData())) }
     val coroutineScope = rememberCoroutineScope()
-    var surveyState = viewModel.surveyState
+    val surveyState by viewModel.surveyState.collectAsState()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
-
-    firstResponse = listOf(
-        listOf(
-            "Low Risk",
-            "Mean Yield :0.4149368649331199",
-            "Standard Deviation: 6.8234870555395695",
-            "Min: -14.803441054031197",
-            "25%(Q1): -1.1837818990004996",
-            "50%(Median): 0.18611909742770605",
-            "75%(Q3): 1.0618668404211329",
-            "Max: 18.981342001355127"
-        ),
-        listOf(
-            "Medium Risk: ",
-            "Mean Yield: 1.9079042224865659",
-            "Standard Deviation: 17.72849496636662",
-            "Min: -30.31707048201071",
-            "25%(Q1): -1.8383755575164251",
-            "50%(Median): 0.5120410824436372",
-            "75%(Q3): 1.9341370638133903",
-            "Max: 46.00383736978544"
-        ),
-        listOf(
-            "High Risk: ",
-            "Mean Yield: 3.509537738115477",
-            "Standard Deviation: 25.456954900845325",
-            "Min: -37.501358309568325",
-            "25%(Q1): -2.4950099225715867",
-            "50%(Median): 0.41986761394164906",
-            "75%(Q3): 2.818111354423769",
-            "Max: 67.66943322526102"
-        )
-    )
 
     val allStocks = listOf(
         listOf(
@@ -286,45 +251,47 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
         }
         if (questionNumber == 1) {
 
-            CustomTextField(
-                value = viewModel.getAnswer(1),
-                label = "Amount",
-                onValueChange = { newValue ->
-                    textInput = newValue
-                    val newAmount = newValue.toIntOrNull()
-                    if (newAmount != null) {
-                        investmentAmount = newAmount
-                        viewModel.saveAnswer(questionNumber, textInput)
-                    }
-                }
-            )
+            InvestmentAmountSlider(viewModel, questionNumber)
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "₪ 25,000",
-                    color=Color.White
-                )
-                val sliderAmount = if (viewModel.getAnswer(1) == "")  investmentAmount else viewModel.getAnswer(1).toFloat()
-                Slider(
-                    value = sliderAmount.toFloat() ,
-                    onValueChange = { newValue ->
-                        investmentAmount = newValue.toInt()
-                        textInput = newValue.toInt().toString()
-                        viewModel.saveAnswer(questionNumber, textInput)
-                    },
-                    valueRange = 25000f..500000f,
-                    steps = 0,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    text = "₪ 500,000",
-                    color=Color.White
-                )
-            }
+//            CustomTextField(
+//                value = viewModel.getAnswer(1),
+//                label = "Amount",
+//                onValueChange = { newValue ->
+//                    textInput = newValue
+//                    val newAmount = newValue.toIntOrNull()
+//                    if (newAmount != null) {
+//                        investmentAmount = newAmount
+//                        viewModel.saveAnswer(questionNumber, textInput)
+//                    }
+//                }
+//            )
+//
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                Text(
+//                    text = "₪ 25,000",
+//                    color=Color.White
+//                )
+//                val sliderAmount = if (viewModel.getAnswer(1) == "")  investmentAmount else viewModel.getAnswer(1).toFloat()
+//                Slider(
+//                    value = sliderAmount.toFloat() ,
+//                    onValueChange = { newValue ->
+//                        investmentAmount = newValue.toInt()
+//                        textInput = newValue.toInt().toString()
+//                        viewModel.saveAnswer(questionNumber, textInput)
+//                    },
+//                    valueRange = 25000f..500000f,
+//                    steps = 0,
+//                    modifier = Modifier.weight(1f)
+//                )
+//                Text(
+//                    text = "₪ 500,000",
+//                    color=Color.White
+//                )
+//            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -345,12 +312,16 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                     onClick = {
                         if (questionNumber == 5){
                             coroutineScope.launch {
-                                firstResponse = viewModel.firstForm(viewModel.getAnswers().value, sessionManager = sessionManager) as List<List<String>>
+                                try {
+                                    viewModel.submitSurvey(sessionManager)
 
+                                } catch (e: Exception) {
+                                    Log.e("SurveyScreen", "Error submitting survey: ${e.message}")
+                                }
                             }
+
                         }
-//                        if (questionNumber == 5){
-//                            navController.navigate("question6")
+
                         else{
                             navController.navigate("question${questionNumber + 1}")
                              }
@@ -373,11 +344,11 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
         }
             if (showDialogForAnswer) {
                 if (questionNumber == 6){
-                    StockListDialog(
-                        onDismissRequest = { showDialogForAnswer = false },
-                        stockList = firstResponse[clickedRisks],
-                        portfolioDescription = answerClicked
-                    )
+//                    StockListDialog(
+//                        onDismissRequest = { showDialogForAnswer = false },
+//                        stockList = firstResponse[clickedRisks],
+//                        portfolioDescription = answerClicked
+//                    )
                 }else {
                     StockListDialog(
                         onDismissRequest = { showDialogForAnswer = false },
@@ -391,21 +362,94 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
 
     when (surveyState) {
         is SurveyState.Loading -> {
-
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x80000000)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
         }
         is SurveyState.Success -> {
-            Text("Successful!")
+            navController.navigate("question6")
         }
         is SurveyState.Error -> {
-            Toast.makeText(context, surveyState.message, Toast.LENGTH_LONG)
+            Toast.makeText(context, (surveyState as SurveyState.Error).message, Toast.LENGTH_LONG)
                 .show()
-            Log.e("fff",surveyState.message)
+            Log.e("fff", (surveyState as SurveyState.Error).message)
 
         }
         else -> {}
     }
 }
+@Composable
+fun InvestmentAmountSlider(viewModel: SurveyViewModel, questionNumber: Int) {
+    val minAmount = 25000f
+    val maxAmount = 500000f
+    val initialAmount = (minAmount + maxAmount) / 2
+    var textInput by remember { mutableStateOf(viewModel.getAnswer(questionNumber)) }
+    var investmentAmount by remember {
+        mutableStateOf(viewModel.getAnswer(questionNumber).toFloatOrNull() ?: initialAmount)
+    }
 
+
+    CustomTextField(
+        value = textInput,
+        label = "Amount",
+        onValueChange = { newValue ->
+            textInput = newValue
+            val newAmount = newValue.toFloatOrNull()
+            if (newAmount != null) {
+                investmentAmount = newAmount
+                viewModel.saveAnswer(questionNumber, newValue)
+            }
+        }
+    )
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "₪ 25,000",
+            color = Color.White
+        )
+
+        Slider(
+            value = investmentAmount,
+            onValueChange = { newValue ->
+                investmentAmount = newValue
+                textInput = newValue.toInt().toString()
+                viewModel.saveAnswer(questionNumber, newValue.toInt().toString())
+            },
+            valueRange = 25000f..500000f,
+            steps = 0,
+            modifier = Modifier.weight(1f)
+        )
+
+        Text(
+            text = "₪ 500,000",
+            color = Color.White
+        )
+    }
+}
 @Composable
 fun StockListDialog(
     onDismissRequest: () -> Unit,
@@ -485,53 +529,22 @@ fun StockListDialog(
     }
 }
 
+fun getFilteredNames(weightList: List<Weight>): List<String> {
+    return weightList.map { it.name }
+        .map { it.replace(" Weight", "") }
+}
+fun getFilteredWeights(weightList:List<Weight>):List<Double>{
+    return weightList.map{it.weight}
 
+}
 @Composable
 fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val answer1 = navBackStackEntry?.arguments?.getString("answer")
-    val labels = listOf(
-        "TSLA - Tesla Inc.",
-            "ADBE - Adobe Inc.",
-            "JNJ - Johnson & Johnson",
-            "EOI - Eaton Vance Enhance Equity Income Fund",
-            "AAPL - Apple Inc.",
-            "AMZN - Amazon.com Inc.",
-            "MSFT - Microsoft Corporation",
-            "GOOG - Alphabet Inc.",
-            "META - Meta Platforms Inc.",
-            "NVDA - NVIDIA Corporation",
-            "AJG - Arthur J. Gallagher & Co.",
-            "BRO - Brown & Brown Inc.",
-            "BAC - Bank of America Corporation",
-            "CSL - Carlisle Companies Incorporated",
-            "593038 - בינלאומי",
-            "273011 - נייס",
-            "442012 - סיאי",
-            "1081124 - אלביט מערכות"
-//        )
+    val stockData by viewModel.stockData.collectAsState()
+    val labels = getFilteredNames(stockData)
+    val weights = getFilteredWeights(stockData)
 
-    )
-    val weights = listOf(
-        0.10,  // TSLA - Tesla Inc. Common Stock
-        0.06,  // ADBE - Adobe Inc. Common Stock
-        0.07,  // JNJ - Johnson & Johnson Common Stock
-        0.03,  // EOI - Eaton Vance Enhance Equity Income Fund
-        0.18,  // AAPL - Apple Inc. Common Stock
-        0.12,  // AMZN - Amazon.com Inc. Common Stock
-        0.15,  // MSFT - Microsoft Corporation Common Stock
-        0.06,  // GOOG - Alphabet Inc. Class C Capital Stock
-        0.04,  // META - Meta Platforms Inc. Class A Common Stock
-        0.05,  // NVDA - NVIDIA Corporation Common Stock
-        0.02,  // AJG - Arthur J. Gallagher & Co. Common Stock
-        0.02,  // BRO - Brown & Brown Inc. Common Stock
-        0.04,  // BAC - Bank of America Corporation Common Stock
-        0.02,  // CSL - Carlisle Companies Incorporated Common Stock
-        0.01,  // 593038 - בינלאומי
-        0.01,  // 273011 - נייס
-        0.01,  // 442012 - סיאי
-        0.01   // 1081124 - אלביט מערכות
-    )
     val clearAnswersAndNavigate = {
         viewModel.clearAnswers()
         navController.navigate("HomeScreen")
@@ -602,19 +615,19 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     }
 }
 
-@Composable
-@Preview
-fun StockListDialogPreview(){
-    ProjectAppTheme{
-        val stockList = listOf(
-        "AAPL", "GOOGL", "MSFT", "AMZN", "TSLA",
-        "FB", "NASDAQ", "S&P 500", "DOW JONES"
-        )
-        StockListDialog( onDismissRequest = { var showDialogForAnswer = null },
-            stockList = stockList,
-            portfolioDescription = "Portfolio number 1")
-    }
-}
+//@Composable
+//@Preview
+//fun StockListDialogPreview(){
+//    ProjectAppTheme{
+//        val stockList = listOf(
+//        "AAPL", "GOOGL", "MSFT", "AMZN", "TSLA",
+//        "FB", "NASDAQ", "S&P 500", "DOW JONES"
+//        )
+//        StockListDialog( onDismissRequest = { var showDialogForAnswer = null },
+//            stockList = stockList,
+//            portfolioDescription = "Portfolio number 1")
+//    }
+//}
 //@Composable
 //@Preview(showBackground = true)
 //fun DefaultPreview() {

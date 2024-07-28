@@ -2,6 +2,7 @@ package com.example.projectapp
 import java.text.NumberFormat
 import java.util.Locale
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +35,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.projectapp.MyAppInstance.Companion.context
+import com.example.projectapp.viewmodel.SurveyState
 import com.example.projectapp.viewmodel.SurveyViewModel
 import kotlin.time.times
 import kotlin.math.pow
@@ -59,66 +63,110 @@ fun RiskSelectionDisplay(
 ) {
     var currentRiskIndex by remember { mutableStateOf(0) }
     val currentRisk = riskData[currentRiskIndex]
+    val surveyState by surveyViewModel.surveyState2.collectAsState()
 
-    Column(
+    Box(
         modifier = Modifier
             .background(Brush.verticalGradient(listOf(MyColors.Primary, MyColors.PrimaryVariant)))
             .fillMaxSize()
-
     ) {
-        Text(
-            "Select Your Risk Level",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color.White,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp)
-        )
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                "Select Your Risk Level",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 8.dp)
+            )
 
+            Spacer(modifier = Modifier.height(24.dp))
 
+            KeyStatisticsCard(currentRisk)
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        KeyStatisticsCard(currentRisk)
+            ReturnRangeCard(surveyViewModel, currentRisk)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        ReturnRangeCard(surveyViewModel, currentRisk)
+            RiskDescriptionCard(currentRisk)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        RiskDescriptionCard(currentRisk)
+//            AdditionalStatisticsCard(currentRisk)
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
+            RiskLevelSelector(
+                currentRiskLevel = currentRisk.level,
+                onPrevious = { if (currentRiskIndex > 0) currentRiskIndex-- },
+                onNext = { if (currentRiskIndex < riskData.size - 1) currentRiskIndex++ }
+            )
 
-//        AdditionalStatisticsCard(currentRisk)
+            Spacer(modifier = Modifier.height(16.dp))
 
+            FunctionButton(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                onClick = {
+                    surveyViewModel.saveAnswer(6, currentRisk.level)
+                    surveyViewModel.finalSurvey()
+                },
+                text = "Confirm ${currentRisk.level} Selection",
+                buttonWidth = 400.dp
+            )
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
-        RiskLevelSelector(
-            currentRiskLevel = currentRisk.level,
-            onPrevious = { if (currentRiskIndex > 0) currentRiskIndex-- },
-            onNext = { if (currentRiskIndex < riskData.size - 1) currentRiskIndex++ }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        FunctionButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            onClick = {
-                surveyViewModel.saveAnswer(6, currentRisk.level)
-            onRiskSelected(currentRisk)
-                      },
-            text ="Confirm ${currentRisk.level} Selection" ,
-            buttonWidth = 400.dp
-        )
+            BottomNavigation(navController)
+        }
 
+        if (surveyState is SurveyState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x80000000)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        BottomNavigation(navController)
+        when (surveyState) {
+            is SurveyState.Success -> {
+                val answer = surveyViewModel.getAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
+                navController.navigate("summary/$answer")
+            }
+            is SurveyState.Error -> {
+                val context = LocalContext.current
+                Toast.makeText(
+                    context,
+                    (surveyState as SurveyState.Error).message,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            else -> {}
+        }
     }
 }
+
 
 @Composable
 fun KeyStatisticsCard(riskData: RiskData) {
@@ -134,7 +182,7 @@ fun KeyStatisticsCard(riskData: RiskData) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            StatColumn("Annual Return", riskData.meanYield, Color.Green)
+            StatColumn("Annual Return", riskData.meanYield*10, Color.Green)
             VerticalDivider()
             StatColumn(label = "Sharpe", value = riskData.sharpeRatio, color =Color.Cyan )
             VerticalDivider()

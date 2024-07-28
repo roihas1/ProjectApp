@@ -45,12 +45,12 @@ class AuthViewModel : ViewModel() {
             loginState = LoginState.Loading
             try {
 //                val tokenResponse = RetrofitInstance.api.getToken()
-//                var cookies = tokenResponse.headers().values("Set-Cookie")
-//                Log.i("login-cookie",tokenResponse.headers().values("Set-Cookie").toString())
-//                var csrfToken = extractCsrfToken(cookies)
-//                if (csrfToken != null) {
-//                    sessionManager.saveCsrfToken(csrfToken)
-//                }
+////                var cookies = tokenResponse.headers().values("Set-Cookie")
+////                Log.i("login-cookie",tokenResponse.headers().values("Set-Cookie").toString())
+////                var csrfToken = extractCsrfToken(cookies)
+////                if (csrfToken != null) {
+////                    sessionManager.saveCsrfToken(csrfToken)
+////                }
                 val response = RetrofitInstance.api.login(LoginRequest(email, password))
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
@@ -76,7 +76,7 @@ class AuthViewModel : ViewModel() {
                         Log.i("info", "helloooo $token" )
                         navController.navigate("HomeScreen")
                     }
-                } else {
+                 } else {
                     Log.i("login-cookie",response.toString())
                     loginState = LoginState.Error("Login failed: ${response.message()}")
 

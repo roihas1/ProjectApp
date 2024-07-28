@@ -1,18 +1,23 @@
 package com.example.projectapp.model
 
+import com.google.gson.annotations.SerializedName
+
 data class FirstDataResponse (
-    val lowRisk: Risk,
-    val mediumRisk: Risk,
-    val highRisk: Risk
+    @SerializedName("Low Risk") val lowRisk: Risk,
+    @SerializedName("Medium Risk") val mediumRisk: Risk,
+    @SerializedName("High Risk") val highRisk: Risk
+
     )
+
+
 data class Risk(
-
-    val meanYield:Double,
-    val standardDeviation: Double,
-    val min:Double,
-    val firstQ: Double,
-    val median: Double,
-    val thirdQ: Double,
-    val max: Double,
-
+//    val level:String,
+    @SerializedName("Mean Yield") val meanYield: Double,
+    @SerializedName("Standard Deviation") val standardDeviation: Double,
+    @SerializedName("Min") val min: Double,
+    @SerializedName("25%(Q1)") val q1: Double,
+    @SerializedName("50%(Median)") val median: Double,
+    @SerializedName("75%(Q3)") val q3: Double,
+    @SerializedName("Max") val max: Double
+//    val sharpeRatio:Double
     )

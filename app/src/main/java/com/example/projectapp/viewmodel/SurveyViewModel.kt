@@ -1,133 +1,178 @@
 package com.example.projectapp.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.projectapp.RiskData
 import com.example.projectapp.SessionManager
 import com.example.projectapp.model.FirstDataResponse
 import com.example.projectapp.model.Form1Request
+import com.example.projectapp.model.Risk
+import com.example.projectapp.model.StockWeightsResponse
+import com.example.projectapp.model.form2Request
 
 import com.example.projectapp.network.RetrofitInstance
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+data class Weight(
+    val name:String,
+    val weight:Double
+    )
 class SurveyViewModel : ViewModel() {
     private val totalQuestions = 7
-    private val answers = mutableStateOf(mutableMapOf<Int, String>())
-    var surveyState by mutableStateOf<SurveyState>(SurveyState.Idle)
-    private var lastAnswers = mutableStateOf(mutableMapOf<Int, String>())
+    private val _answers = MutableStateFlow(mapOf<Int, String>())
+    val answers: StateFlow<Map<Int, String>> = _answers.asStateFlow()
+
+    private val _surveyState = MutableStateFlow<SurveyState>(SurveyState.Idle)
+    val surveyState: StateFlow<SurveyState> = _surveyState.asStateFlow()
+
+    private val _surveyState2 = MutableStateFlow<SurveyState>(SurveyState.Idle)
+    val surveyState2: StateFlow<SurveyState> = _surveyState2.asStateFlow()
+
+    private var _lastAnswers = MutableStateFlow(mapOf<Int, String>())
+    val lastAnswers: StateFlow<Map<Int, String>> = _lastAnswers.asStateFlow()
+
+    private val _riskData = MutableStateFlow<List<RiskData>>(emptyList())
+    val riskData: StateFlow<List<RiskData>> = _riskData.asStateFlow()
+    private val _stocksData = MutableStateFlow<List<Weight>>(emptyList())
+    val stockData: StateFlow<List<Weight>> = _stocksData.asStateFlow()
 
     fun saveAnswer(questionNumber: Int, answer: String) {
-        val currentAnswers = answers.value.toMutableMap()
-        currentAnswers[questionNumber] = answer
-        answers.value = currentAnswers
+        _answers.value = _answers.value.toMutableMap().apply {
+            put(questionNumber, answer)
+        }
     }
 
-    fun getAnswer(questionNumber: Int): String {
-        return answers.value[questionNumber] ?: ""
-    }
-    fun getAnswers(): MutableState<MutableMap<Int, String>> {
-        return answers
-    }
-    fun isSurveyComplete(): Boolean {
-        println(answers)
-        return answers.value.size == totalQuestions
-    }
+    fun getAnswer(questionNumber: Int): String = _answers.value[questionNumber] ?: ""
+
+    fun isSurveyComplete(): Boolean = _answers.value.size == totalQuestions
+
     fun clearAnswers() {
-        lastAnswers.value = answers.value.toMutableMap()
-        answers.value.clear()
-    }
-    fun getLastAnswer(questionNumber: Int): String {
-        return lastAnswers.value[questionNumber]?:""
+        _lastAnswers.value = _answers.value
+        _answers.value = emptyMap()
     }
 
-
-    suspend fun firstForm(answers: MutableMap<Int, String>,sessionManager: SessionManager): List<Any> {
-        var result: List<Any> = listOf()
+    fun getLastAnswer(questionNumber: Int): String = _lastAnswers.value[questionNumber] ?: ""
+    fun finalSurvey(){
         viewModelScope.launch {
-            surveyState = SurveyState.Loading
-            val currentAnswers = answers.toMutableMap()
-            val mlAnswerString = currentAnswers[2]
-            val mlAnswer = if (mlAnswerString == "No") 0 else 1
-            val modelAnswer = if (currentAnswers[3] == "Markowitz") 0 else 1
-            sessionManager.getCsrfToken()?.let { Log.i("infoooo", it) }
-            try {
-                val response = RetrofitInstance.api.form1(Form1Request(mlAnswer, modelAnswer))
-                if (response.isSuccessful) {
-                    val responseToShow = RetrofitInstance.api.getPlotData1()
-                    val body = responseToShow.body()
-                    Log.i("heloo",response.headers()["Set-Cookie"].toString())
-                    Log.i("heloo", body.toString())
-                    if (body != null) {
-                        result = riskToList(body)
-                        Log.i("heloo", result.toString())
-                    } else {
-                        surveyState =
-                            SurveyState.Error("first Form failed: ${responseToShow.message()}")
-                    }
-
-                } else {
-                    surveyState =
-                        SurveyState.Error("Failed to submit first form: ${response.message()}")
+            _surveyState2.value = SurveyState.Loading
+            var answer_1 = 0
+            var answer_2 = 0
+            var answer_3 = 0
+            var stocks_symbols = 0
+            try{
+                val currentAnswers = _answers.value
+                when(currentAnswers[4]){
+                    "Indexes(recommended)" -> stocks_symbols = 1
+                    "Top indexes" -> stocks_symbols = 2
+                    "Indexes and stocks" -> stocks_symbols = 3
+                    "Top stocks" -> stocks_symbols = 4
                 }
-            } catch (e: Exception) {
-                surveyState = SurveyState.Error("Exception occurred: ${e.message}")
+                when(currentAnswers[5]){
+                    "0-2" -> answer_1 = 1
+                    "2-4"-> answer_1 = 2
+                    "4-40" -> answer_1 = 3
+                }
+                when(currentAnswers[6]){
+                    "Low Risk"-> {
+                        answer_2=1
+                        answer_3 =1
+                    }
+                    "Medium Risk"-> {
+                        answer_2 =2
+                        answer_3 =2
+                    }
+                    "High Risk" -> {
+                        answer_2 = 3
+                        answer_3 = 3
+                    }
+                }
+                val sumRisk = answer_1 + answer_2 + stocks_symbols
+                val finalPortfolioType = when {
+                    sumRisk in 0..3 -> "Safest"
+                    sumRisk in 4..6 -> "Sharpe"
+                    else -> "Max Returns"
+                }
+
+
+                val form2Request = form2Request(answer_1,answer_2,answer_3,stocks_symbols)
+                RetrofitInstance.api.form2(form2Request)
+                val plotDataResponse = RetrofitInstance.api.getPlotData2()
+
+
+                _stocksData.value = plotDataResponse.body()?.let { convertToWeightList(it,finalPortfolioType) }!!
+                _surveyState2.value = SurveyState.Success("ok")
+
+            } catch (e: Exception) {0
+                _surveyState2.value = SurveyState.Error("Exception occurred: ${e.message}")
             }
-
-
         }
-        return result
+    }
+    fun convertToWeightList(stockWeightsResponse: StockWeightsResponse, typeOfRisk: String): List<Weight> {
+        val stocks = when (typeOfRisk) {
+            "Safest" -> stockWeightsResponse.Safest
+            "Sharpe" -> stockWeightsResponse.Sharpe
+            "Max Returns" -> stockWeightsResponse.MaxReturns
+            else -> throw IllegalArgumentException("Invalid risk type: $typeOfRisk")
+        }
+
+        return stocks.map { (name, weight) ->
+            Weight(name = name, weight = weight)
+        }
+    }
+    fun submitSurvey(sessionManager: SessionManager) {
+        viewModelScope.launch {
+            _surveyState.value = SurveyState.Loading
+            try {
+                val currentAnswers = _answers.value
+                val mlAnswer = if (currentAnswers[2] == "No") 0 else 1
+                val modelAnswer = if (currentAnswers[3] == "Markowitz") 0 else 1
+
+
+                    val form1Request = Form1Request(mlAnswer, modelAnswer)
+                    RetrofitInstance.api.form1(form1Request)
+                    val plotDataResponse = RetrofitInstance.api.getPlotData1()
+                    _riskData.value = riskToList(plotDataResponse.body())
+                    _surveyState.value = SurveyState.Success("ok")
+                }
+             catch (e: Exception) {
+                _surveyState.value = SurveyState.Error("Exception occurred: ${e.message}")
+            }
+        }
     }
 
-    private fun riskToList(body: FirstDataResponse?): List<Any> {
-        if (body != null) {
-            return listOf(
-                listOf(
-                "Low Risk Stats - \n",
-                "  Mean Yield: ${body.lowRisk.meanYield}\",\n" ,
-                        "        \"Standard Deviation: ${body.lowRisk.standardDeviation},\n" ,
-                        "        \"Min: ${body.lowRisk.min}\",\n" ,
-                        "        \"25%(Q1): ${body.lowRisk.firstQ}\",\n" ,
-                        "        \"50%(Median): ${body.lowRisk.median}\",\n" ,
-                        "        \"75%(Q3): ${body.lowRisk.thirdQ}\",\n" ,
-                        "        \"Max: ${body.lowRisk.max}\""
-                ),
-                listOf(
-                "Medium Risk Stats -\n",
-                        "  Mean Yield: ${body.mediumRisk.meanYield}\",\n" ,
-                        "        \"Standard Deviation: ${body.mediumRisk.standardDeviation},\n" ,
-                        "        \"Min: ${body.mediumRisk.min}\",\n" ,
-                        "        \"25%(Q1): ${body.mediumRisk.firstQ}\",\n" ,
-                        "        \"50%(Median): ${body.mediumRisk.median}\",\n",
-                        "        \"75%(Q3): ${body.mediumRisk.thirdQ}\",\n" ,
-                        "        \"Max: ${body.mediumRisk.max}\"",
-                ),
-                listOf(
-                "High Risk Stats - \n",
-                        "  Mean Yield: ${body.highRisk.meanYield}\",\n" ,
-                        "        \"Standard Deviation: ${body.highRisk.standardDeviation},\n" ,
-                        "        \"Min: ${body.highRisk.min}\",\n" ,
-                        "        \"25%(Q1): ${body.highRisk.firstQ}\",\n" ,
-                        "        \"50%(Median): ${body.highRisk.median}\",\n" ,
-                        "        \"75%(Q3): ${body.highRisk.thirdQ}\",\n" ,
-                        "        \"Max: ${body.highRisk.max}\"",
-                )
-
+    private fun riskToList(body: FirstDataResponse?): List<RiskData> {
+        return body?.let { response ->
+            listOf(
+                createRiskData("Low Risk", response.lowRisk, 0.864),
+                createRiskData("Medium Risk", response.mediumRisk, 0.864),
+                createRiskData("High Risk", response.highRisk, 0.864)
             )
-        }
-        return listOf()
-
+        } ?: emptyList()
     }
 
-
+    private fun createRiskData(title: String, risk: Risk, additionalMetric: Double): RiskData {
+        return RiskData(
+            level = title,
+            meanYield = risk.meanYield,
+            stdDev = risk.standardDeviation,
+            min = risk.min,
+            q1 = risk.q1,
+            median = risk.median,
+            q3 = risk.q3,
+            max = risk.max,
+            sharpeRatio = additionalMetric
+        )
+    }
 }
-    sealed class SurveyState {
-        object Idle : SurveyState()
-        object Loading : SurveyState()
-        data class Success(val data: FirstDataResponse?) : SurveyState()
-        data class Error(val message: String) : SurveyState()
 
-    }
+
+sealed class SurveyState {
+    object Idle : SurveyState()
+    object Loading : SurveyState()
+    data class Success(val data: String?) : SurveyState()
+    data class Error(val message: String) : SurveyState()
+}

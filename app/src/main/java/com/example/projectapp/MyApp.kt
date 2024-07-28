@@ -4,6 +4,8 @@ import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -67,11 +69,20 @@ fun MyApp() {
 //        }
         composable("question6"){
             val answer = surveyViewModel.getAnswer(1).takeIf { it.isNotEmpty() } ?: 25000.0
+            val risks by surveyViewModel.riskData.collectAsState()
+            val lowRisk = risks[0]
+            val mediumRisk = risks[1]
+            val highRisk = risks[2]
             RiskSelectionDisplay(riskData = listOf(
-                RiskData("Low Risk", 4.5, 6.82, -2.80, -1.18, 0.19, 1.06, 7.98,0.864),
-                RiskData("Medium Risk", 8.67, 17.73, -4.32, -1.84, 0.51, 1.93, 12.00,1.425),
-                RiskData("High Risk", 11.34, 25.46, -7.50, -2.50, 0.42, 2.82, 18.67,1.047)
-            ), onRiskSelected = { navController.navigate("summary/${answer}")
+//                RiskData("Low Risk", 4.5, 6.82, -2.80, -1.18, 0.19, 1.06, 7.98,0.864),
+                RiskData("Low Risk", lowRisk.meanYield, lowRisk.stdDev, lowRisk.min, lowRisk.q1, lowRisk.median, lowRisk.q3, lowRisk.max,0.864),
+//                RiskData("Medium Risk", 8.67, 17.73, -4.32, -1.84, 0.51, 1.93, 12.00,1.425),
+                RiskData("Medium Risk", mediumRisk.meanYield, mediumRisk.stdDev, mediumRisk.min, mediumRisk.q1, mediumRisk.median, mediumRisk.q3, mediumRisk.max,1.425),
+//                RiskData("High Risk", 11.34, 25.46, -7.50, -2.50, 0.42, 2.82, 18.67,1.047)
+                RiskData("High Risk", highRisk.meanYield, highRisk.stdDev, highRisk.min, highRisk.q1, highRisk.median, highRisk.q3, highRisk.max,1.047)
+            ), onRiskSelected = {
+
+                navController.navigate("summary/${answer}")
             },
                 surveyViewModel,navController)
         }
@@ -83,3 +94,4 @@ fun MyApp() {
 
 
 }
+
