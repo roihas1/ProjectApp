@@ -55,9 +55,9 @@ fun MyApp() {
         composable("question5") {
             SurveyScreen(navController, surveyViewModel,sessionManager,5, "For how many years do you want to invest?",listOf("0-2", "2-4", "4-40"))
         }
-        composable("question8") {
-            SurveyScreen(navController, surveyViewModel,sessionManager,6, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
-        }
+//        composable("question8") {
+//            SurveyScreen(navController, surveyViewModel,sessionManager,6, "What level of risk do you prefer?",listOf("Low", "Medium", "High"))
+//        }
         composable("AboutScreen"){
             AboutScreen(navController)
         }
@@ -74,12 +74,12 @@ fun MyApp() {
             val mediumRisk = risks[1]
             val highRisk = risks[2]
             RiskSelectionDisplay(riskData = listOf(
-//                RiskData("Low Risk", 4.5, 6.82, -2.80, -1.18, 0.19, 1.06, 7.98,0.864),
-                RiskData("Low Risk", lowRisk.meanYield, lowRisk.stdDev, lowRisk.min, lowRisk.q1, lowRisk.median, lowRisk.q3, lowRisk.max,0.864),
-//                RiskData("Medium Risk", 8.67, 17.73, -4.32, -1.84, 0.51, 1.93, 12.00,1.425),
-                RiskData("Medium Risk", mediumRisk.meanYield, mediumRisk.stdDev, mediumRisk.min, mediumRisk.q1, mediumRisk.median, mediumRisk.q3, mediumRisk.max,1.425),
-//                RiskData("High Risk", 11.34, 25.46, -7.50, -2.50, 0.42, 2.82, 18.67,1.047)
-                RiskData("High Risk", highRisk.meanYield, highRisk.stdDev, highRisk.min, highRisk.q1, highRisk.median, highRisk.q3, highRisk.max,1.047)
+
+                RiskData("Low Risk", lowRisk.meanYield, lowRisk.stdDev, lowRisk.min, lowRisk.q1, lowRisk.median, lowRisk.q3, lowRisk.max,lowRisk.sharpeRatio),
+
+                RiskData("Medium Risk", mediumRisk.meanYield, mediumRisk.stdDev, mediumRisk.min, mediumRisk.q1, mediumRisk.median, mediumRisk.q3, mediumRisk.max,mediumRisk.sharpeRatio),
+
+                RiskData("High Risk", highRisk.meanYield, highRisk.stdDev, highRisk.min, highRisk.q1, highRisk.median, highRisk.q3, highRisk.max,highRisk.sharpeRatio)
             ), onRiskSelected = {
 
                 navController.navigate("summary/${answer}")

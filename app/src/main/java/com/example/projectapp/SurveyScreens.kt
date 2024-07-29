@@ -143,7 +143,9 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
     val surveyState by viewModel.surveyState.collectAsState()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
-
+    val isAllQuestionsAnswered = remember(questionNumber) {
+        (1 until 5).all { viewModel.getAnswer(it) != "" }
+    }
     val allStocks = listOf(
         listOf(
             "This portfolio focuses on diversified investments across major market indices," +
@@ -249,51 +251,13 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                 }
             }
         }
+
         if (questionNumber == 1) {
-
             InvestmentAmountSlider(viewModel, questionNumber)
-
-//            CustomTextField(
-//                value = viewModel.getAnswer(1),
-//                label = "Amount",
-//                onValueChange = { newValue ->
-//                    textInput = newValue
-//                    val newAmount = newValue.toIntOrNull()
-//                    if (newAmount != null) {
-//                        investmentAmount = newAmount
-//                        viewModel.saveAnswer(questionNumber, textInput)
-//                    }
-//                }
-//            )
-//
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Text(
-//                    text = "₪ 25,000",
-//                    color=Color.White
-//                )
-//                val sliderAmount = if (viewModel.getAnswer(1) == "")  investmentAmount else viewModel.getAnswer(1).toFloat()
-//                Slider(
-//                    value = sliderAmount.toFloat() ,
-//                    onValueChange = { newValue ->
-//                        investmentAmount = newValue.toInt()
-//                        textInput = newValue.toInt().toString()
-//                        viewModel.saveAnswer(questionNumber, textInput)
-//                    },
-//                    valueRange = 25000f..500000f,
-//                    steps = 0,
-//                    modifier = Modifier.weight(1f)
-//                )
-//                Text(
-//                    text = "₪ 500,000",
-//                    color=Color.White
-//                )
-//            }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -310,25 +274,33 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                 FunctionButton(
                     modifier = Modifier,
                     onClick = {
-                        if (questionNumber == 5){
-                            coroutineScope.launch {
-                                try {
-                                    viewModel.submitSurvey(sessionManager)
 
-                                } catch (e: Exception) {
-                                    Log.e("SurveyScreen", "Error submitting survey: ${e.message}")
+                        if (questionNumber == 5){
+                            if (selectedAnswer == ""){
+                                Toast.makeText(context,"To proceed you must select an answer!",Toast.LENGTH_LONG).show()
+                            }
+                            else {
+                                coroutineScope.launch {
+                                    try {
+                                        viewModel.submitSurvey(sessionManager)
+
+                                    } catch (e: Exception) {
+                                        Log.e(
+                                            "SurveyScreen",
+                                            "Error submitting survey: ${e.message}"
+                                        )
+                                    }
                                 }
                             }
-
                         }
-
                         else{
                             navController.navigate("question${questionNumber + 1}")
                              }
                               },
 
                     text = "Next",
-                    buttonWidth = 120.dp
+                    buttonWidth = 120.dp,
+                    enabled =  if (questionNumber == 5 ) isAllQuestionsAnswered else true
                 )
 
             } else {
@@ -343,21 +315,25 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
             }
         }
             if (showDialogForAnswer) {
-                if (questionNumber == 6){
-//                    StockListDialog(
-//                        onDismissRequest = { showDialogForAnswer = false },
-//                        stockList = firstResponse[clickedRisks],
-//                        portfolioDescription = answerClicked
-//                    )
-                }else {
-                    StockListDialog(
-                        onDismissRequest = { showDialogForAnswer = false },
-                        stockList = allStocks[clickedStocks],
-                        portfolioDescription = answerClicked
-                    )
-                }
+//                StockListDialog(
+//                    onDismissRequest = { showDialogForAnswer = false },
+//                    stockList = allStocks[clickedStocks],
+//                    portfolioDescription = answerClicked
+//                )
+                GenericDialog(
+                    onDismissRequest = { showDialogForAnswer = false },
+                    itemList = allStocks[clickedStocks],
+                    dialogTitle = answerClicked,
+                    itemToString = { it },  // Assuming each stock is already a string
+                    onItemClick = { selectedStock ->
+                        // Handle the selection of the stock
+                        showDialogForAnswer = false  // Dismiss the dialog after selection
+                    }
+                )
             }
+
         BottomNavigation(navController)
+
     }
 
     when (surveyState) {
@@ -392,7 +368,6 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
         is SurveyState.Error -> {
             Toast.makeText(context, (surveyState as SurveyState.Error).message, Toast.LENGTH_LONG)
                 .show()
-            Log.e("fff", (surveyState as SurveyState.Error).message)
 
         }
         else -> {}
@@ -407,7 +382,6 @@ fun InvestmentAmountSlider(viewModel: SurveyViewModel, questionNumber: Int) {
     var investmentAmount by remember {
         mutableStateOf(viewModel.getAnswer(questionNumber).toFloatOrNull() ?: initialAmount)
     }
-
 
     CustomTextField(
         value = textInput,
@@ -528,7 +502,87 @@ fun StockListDialog(
         }
     }
 }
+@Composable
+fun <T> GenericDialog(
+    onDismissRequest: () -> Unit,
+    itemList: List<T>,
+    dialogTitle: String,
+    itemToString: (T) -> String,
+    onItemClick: (T) -> Unit
+) {
+    var visible by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        visible = true
+    }
+
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn() + scaleIn(initialScale = 0.8f) + slideInVertically(initialOffsetY = { it }),
+            exit = fadeOut() + scaleOut(targetScale = 0.8f) + slideOutVertically(targetOffsetY = { it })
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                tonalElevation = 8.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .fillMaxHeight(0.5f)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = dialogTitle,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        itemsIndexed(itemList) { index, item ->
+                            var itemVisible by remember { mutableStateOf(false) }
+
+                            LaunchedEffect(Unit) {
+                                delay(index * 50L)
+                                itemVisible = true
+                            }
+
+                            AnimatedVisibility(
+                                visible = itemVisible,
+                                enter = fadeIn() + slideInVertically(initialOffsetY = { it / 2 })
+                            ) {
+                                Text(
+                                    text = itemToString(item),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            onItemClick(item)
+                                            onDismissRequest()
+                                        }
+                                        .padding(vertical = 12.dp, horizontal = 8.dp)
+                                )
+                            }
+
+                            if (index < itemList.lastIndex) {
+                                Divider()
+                            }
+                        }
+                    }
+                    TextButton(
+                        onClick = onDismissRequest,
+                        modifier = Modifier.align(Alignment.End)
+                    ) {
+                        Text("Close")
+                    }
+                }
+            }
+        }
+    }
+}
 fun getFilteredNames(weightList: List<Weight>): List<String> {
     return weightList.map { it.name }
         .map { it.replace(" Weight", "") }

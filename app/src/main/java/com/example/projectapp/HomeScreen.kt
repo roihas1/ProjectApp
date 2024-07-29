@@ -62,7 +62,10 @@ fun HomeScreen(navController: NavController,
     ){
         Title()
         FunctionButton(
-            onClick = { navController.navigate("question1")},
+            onClick = {
+                navController.navigate("question1")
+
+             },
             text ="Create A New\n\nInvestment\n\nPortfolio",
             buttonWidth = 280.dp,
             contentPadding = PaddingValues(30.dp),

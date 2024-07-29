@@ -161,6 +161,7 @@ fun RiskSelectionDisplay(
                     (surveyState as SurveyState.Error).message,
                     Toast.LENGTH_LONG
                 ).show()
+                Log.i("erorrr",(surveyState as SurveyState.Error).message)
             }
             else -> {}
         }

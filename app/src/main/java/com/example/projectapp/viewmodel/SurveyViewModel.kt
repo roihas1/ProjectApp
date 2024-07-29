@@ -51,8 +51,12 @@ class SurveyViewModel : ViewModel() {
     fun isSurveyComplete(): Boolean = _answers.value.size == totalQuestions
 
     fun clearAnswers() {
-        _lastAnswers.value = _answers.value
-        _answers.value = emptyMap()
+        if (_answers.value.isNotEmpty()) {
+            _surveyState.value = SurveyState.Idle
+            _surveyState2.value = SurveyState.Idle
+            _lastAnswers.value = _answers.value
+            _answers.value = emptyMap()
+        }
     }
 
     fun getLastAnswer(questionNumber: Int): String = _lastAnswers.value[questionNumber] ?: ""
@@ -102,22 +106,27 @@ class SurveyViewModel : ViewModel() {
                 RetrofitInstance.api.form2(form2Request)
                 val plotDataResponse = RetrofitInstance.api.getPlotData2()
 
-
+                Log.i("the response",plotDataResponse.body().toString())
                 _stocksData.value = plotDataResponse.body()?.let { convertToWeightList(it,finalPortfolioType) }!!
                 _surveyState2.value = SurveyState.Success("ok")
 
-            } catch (e: Exception) {0
+            } catch (e: Exception) {
+                Log.i("errorr in Final survey",e.stackTraceToString())
                 _surveyState2.value = SurveyState.Error("Exception occurred: ${e.message}")
             }
         }
     }
-    fun convertToWeightList(stockWeightsResponse: StockWeightsResponse, typeOfRisk: String): List<Weight> {
+    private fun convertToWeightList(stockWeightsResponse: StockWeightsResponse, typeOfRisk: String): List<Weight> {
+        Log.i("type of risk",typeOfRisk)
         val stocks = when (typeOfRisk) {
             "Safest" -> stockWeightsResponse.Safest
             "Sharpe" -> stockWeightsResponse.Sharpe
             "Max Returns" -> stockWeightsResponse.MaxReturns
             else -> throw IllegalArgumentException("Invalid risk type: $typeOfRisk")
         }
+        Log.i("Response list",stockWeightsResponse.toString())
+        Log.i("stocks list", stocks.toString())
+
 
         return stocks.map { (name, weight) ->
             Weight(name = name, weight = weight)
@@ -145,11 +154,16 @@ class SurveyViewModel : ViewModel() {
     }
 
     private fun riskToList(body: FirstDataResponse?): List<RiskData> {
+        val riskFreeRate = 0.035
+        Log.i("statss",body?.lowRisk?.meanYield.toString() +" " + body?.lowRisk?.standardDeviation.toString())
+        val lowRiskSharpe = ((body?.lowRisk?.meanYield ?: riskFreeRate) - riskFreeRate)/ (body?.lowRisk?.standardDeviation!! /10)
+        val mediumRiskSharpe = (body.mediumRisk.meanYield - riskFreeRate)/ (body.mediumRisk.standardDeviation /10)
+        val highRiskSharpe = (body.highRisk.meanYield  - riskFreeRate)/ (body.highRisk.standardDeviation /10)
         return body?.let { response ->
             listOf(
-                createRiskData("Low Risk", response.lowRisk, 0.864),
-                createRiskData("Medium Risk", response.mediumRisk, 0.864),
-                createRiskData("High Risk", response.highRisk, 0.864)
+                createRiskData("Low Risk", response.lowRisk, lowRiskSharpe),
+                createRiskData("Medium Risk", response.mediumRisk, mediumRiskSharpe),
+                createRiskData("High Risk", response.highRisk, highRiskSharpe)
             )
         } ?: emptyList()
     }
