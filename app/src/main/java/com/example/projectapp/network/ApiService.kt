@@ -1,5 +1,6 @@
 package com.example.projectapp.network
 
+import com.example.projectapp.model.AddInvestmentResponse
 import com.example.projectapp.model.FirstDataResponse
 import com.example.projectapp.model.Form1Request
 import com.example.projectapp.model.Form1Response
@@ -9,6 +10,7 @@ import com.example.projectapp.model.LoginResponse
 import com.example.projectapp.model.SignUpRequest
 import com.example.projectapp.model.SignUpResponse
 import com.example.projectapp.model.StockWeightsResponse
+import com.example.projectapp.model.addInvestmentRequest
 import com.example.projectapp.model.form2Request
 
 import retrofit2.http.Body
@@ -36,4 +38,7 @@ interface ApiService {
 
     @POST("users/logout/")
     suspend fun logout(@Body request: LoginRequest): Response<LoginResponse>
+
+    @POST("/investment/add/")
+    suspend fun addInvestment(@Body request: addInvestmentRequest):Response<AddInvestmentResponse>
 }

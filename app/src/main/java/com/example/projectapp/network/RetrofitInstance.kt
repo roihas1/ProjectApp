@@ -102,7 +102,7 @@ class InMemoryCookieJar : CookieJar {
     }
 }
 object RetrofitInstance {
-    private const val BASE_URL = "http://192.168.1.24:8000/"
+    private const val BASE_URL = "http://192.168.1.19:8000/"
     private const val TIMEOUT = 30L // 30 seconds
 
     private val cookieJar = InMemoryCookieJar()

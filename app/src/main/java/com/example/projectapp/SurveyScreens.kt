@@ -56,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.projectapp.MyAppInstance.Companion.context
 import com.example.projectapp.viewmodel.Weight
 import kotlinx.coroutines.delay
 
@@ -282,7 +283,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
                             else {
                                 coroutineScope.launch {
                                     try {
-                                        viewModel.submitSurvey(sessionManager)
+                                        viewModel.submitSurvey()
 
                                     } catch (e: Exception) {
                                         Log.e(
@@ -598,7 +599,7 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     val stockData by viewModel.stockData.collectAsState()
     val labels = getFilteredNames(stockData)
     val weights = getFilteredWeights(stockData)
-
+    val surveyState by viewModel.surveyState3.collectAsState()
     val clearAnswersAndNavigate = {
         viewModel.clearAnswers()
         navController.navigate("HomeScreen")
@@ -657,7 +658,9 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
                 textSize = 20.sp
             )
             FunctionButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                          viewModel.addInvestment()
+                },
                 text = "Save to ",
                 buttonWidth = 160.dp,
                 withIcon = true,
@@ -666,6 +669,43 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
 
         }
         BottomNavigation(navController)
+    }
+    when (surveyState) {
+        is SurveyState.Loading -> {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x80000000)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Loading...",
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+        is SurveyState.Success -> {
+            clearAnswersAndNavigate()
+        }
+        is SurveyState.Error -> {
+            Toast.makeText(context, (surveyState as SurveyState.Error).message, Toast.LENGTH_LONG)
+                .show()
+            Log.e("error summary screen",(surveyState as SurveyState.Error).message)
+
+        }
+        else -> {}
     }
 }
 
