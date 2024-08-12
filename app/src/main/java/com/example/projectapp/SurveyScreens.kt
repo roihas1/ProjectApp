@@ -339,29 +339,7 @@ fun SurveyScreen(navController: NavHostController, viewModel: SurveyViewModel,se
 
     when (surveyState) {
         is SurveyState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0x80000000)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+          Loading()
         }
         is SurveyState.Success -> {
             navController.navigate("question6")
@@ -672,29 +650,30 @@ fun SummaryScreen(navController: NavHostController,viewModel: SurveyViewModel) {
     }
     when (surveyState) {
         is SurveyState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0x80000000)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+            Loading()
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color(0x80000000)),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    CircularProgressIndicator(
+//                        color = MaterialTheme.colorScheme.primary,
+//                        strokeWidth = 4.dp
+//                    )
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                    Text(
+//                        text = "Loading...",
+//                        style = MaterialTheme.typography.headlineSmall,
+//                        color = Color.White,
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//            }
         }
         is SurveyState.Success -> {
             clearAnswersAndNavigate()

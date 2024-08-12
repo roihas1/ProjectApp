@@ -169,39 +169,14 @@ fun LoginScreen(navController: NavController,
 
     when (loginState) {
         is LoginState.Loading -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0x80000000)),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary,
-                        strokeWidth = 4.dp
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "Loading...",
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
+           Loading()
         }
         is LoginState.Success -> {
-//                navController.navigate("HomeScreen")
-//            Text("Login Successful!")
+
         }
         is LoginState.Error -> {
             showErrorDialog = true
-//            Toast.makeText(context, "wrong password/username", Toast.LENGTH_LONG)
-//                .show()
-//            Text("Error: ${loginState.message}")
+
         }
         else -> {}
     }

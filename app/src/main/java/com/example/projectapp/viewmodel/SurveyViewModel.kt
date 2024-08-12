@@ -161,7 +161,7 @@ class SurveyViewModel : ViewModel() {
         }
     }
     fun addInvestment(){
-        Log.d("add investment","inside add investment function")
+
         viewModelScope.launch{
             _surveyState3.value = SurveyState.Loading
             try{
@@ -194,7 +194,7 @@ class SurveyViewModel : ViewModel() {
     }
     private fun riskToList(body: FirstDataResponse?): List<RiskData> {
         val riskFreeRate = 0.035
-        Log.i("statss",body?.lowRisk?.meanYield.toString() +" " + body?.lowRisk?.standardDeviation.toString())
+
         val lowRiskSharpe = ((body?.lowRisk?.meanYield ?: riskFreeRate) - riskFreeRate)/ (body?.lowRisk?.standardDeviation!! /10)
         val mediumRiskSharpe = (body.mediumRisk.meanYield - riskFreeRate)/ (body.mediumRisk.standardDeviation /10)
         val highRiskSharpe = (body.highRisk.meanYield  - riskFreeRate)/ (body.highRisk.standardDeviation /10)
